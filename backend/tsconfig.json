@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@oakvale/shared/*": ["../packages/shared/src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["src", "../packages/shared/src"]
+}

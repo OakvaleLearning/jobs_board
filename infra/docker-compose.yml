@@ -1,0 +1,100 @@
+name: oakvale-jobs
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: oakvale
+      POSTGRES_PASSWORD: oakvale
+      POSTGRES_DB: oakvale_jobs
+    ports: ['${POSTGRES_HOST_PORT:-5433}:5432']
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U oakvale -d oakvale_jobs']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    ports: ['${REDIS_HOST_PORT:-6379}:6379']
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${PORT:-3000}
+    ports: ['${BACKEND_HOST_PORT:-3000}:3000']
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/health']
+      interval: 10s
+      timeout: 3s
+      retries: 20
+      start_period: 40s
+    volumes:
+      - ../backend:/app/backend
+      - ../packages:/app/packages
+      - /app/backend/node_modules
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+    ports: ['${FRONTEND_HOST_PORT:-3001}:3000']
+    depends_on: [backend]
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000']
+      interval: 10s
+      timeout: 3s
+      retries: 20
+      start_period: 40s
+    volumes:
+      - ../frontend:/app/frontend
+      - ../packages:/app/packages
+      - /app/frontend/node_modules
+      - /app/frontend/.next
+      - /app/node_modules
+
+  nginx:
+    image: nginx:alpine
+    ports: ['${NGINX_HOST_PORT:-80}:80']
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      backend: { condition: service_healthy }
+      frontend: { condition: service_healthy }
+
+  adminer:
+    image: adminer:latest
+    ports: ['${ADMINER_HOST_PORT:-8080}:8080']
+    depends_on: [postgres]
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports: ['${REDIS_COMMANDER_HOST_PORT:-8081}:8081']
+    depends_on: [redis]
+
+volumes:
+  pgdata:
+  redisdata:

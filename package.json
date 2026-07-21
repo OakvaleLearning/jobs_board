@@ -1,0 +1,23 @@
+{
+  "name": "oakvale-jobs-portal",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["backend", "frontend", "packages/*"],
+  "scripts": {
+    "dev": "docker compose -f infra/docker-compose.yml --env-file .env up",
+    "down": "docker compose -f infra/docker-compose.yml --env-file .env down",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "prettier": "^3.2.5",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

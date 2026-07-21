@@ -1,0 +1,46 @@
+{
+  "name": "@oakvale/shared",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    "./schema/auth": "./src/schema/auth.ts",
+    "./schema/worker": "./src/schema/worker.ts",
+    "./schema/verification": "./src/schema/verification.ts",
+    "./schema/employer": "./src/schema/employer.ts",
+    "./schema/placement": "./src/schema/placement.ts",
+    "./schema/payment": "./src/schema/payment.ts",
+    "./schema/admin": "./src/schema/admin.ts",
+    "./schema/notifications": "./src/schema/notifications.ts",
+    "./schema/contracts": "./src/schema/contracts.ts",
+    "./schema/complaints": "./src/schema/complaints.ts",
+    "./schema/offer": "./src/schema/offer.ts",
+    "./schema/messaging": "./src/schema/messaging.ts",
+    "./schema/workforce-category": "./src/schema/workforce-category.ts",
+    "./schema/employer-type": "./src/schema/employer-type.ts",
+    "./enums/worker": "./src/enums/worker.ts",
+    "./enums/verification": "./src/enums/verification.ts",
+    "./enums/employer": "./src/enums/employer.ts",
+    "./enums/placement": "./src/enums/placement.ts",
+    "./enums/payment": "./src/enums/payment.ts",
+    "./enums/admin": "./src/enums/admin.ts",
+    "./enums/notifications": "./src/enums/notifications.ts",
+    "./enums/contracts": "./src/enums/contracts.ts",
+    "./enums/complaints": "./src/enums/complaints.ts",
+    "./enums/offer": "./src/enums/offer.ts",
+    "./enums/messaging": "./src/enums/messaging.ts",
+    "./enums/workforce-category": "./src/enums/workforce-category.ts",
+    "./enums/employer-type": "./src/enums/employer-type.ts",
+    "./roles": "./src/roles.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
