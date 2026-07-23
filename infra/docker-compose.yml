@@ -49,7 +49,6 @@ services:
       - ../backend:/app/backend
       - ../packages:/app/packages
       - /app/backend/node_modules
-      - /app/node_modules
 
   frontend:
     build:
@@ -72,7 +71,6 @@ services:
       - ../packages:/app/packages
       - /app/frontend/node_modules
       - /app/frontend/.next
-      - /app/node_modules
 
   nginx:
     image: nginx:alpine
