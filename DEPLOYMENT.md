@@ -160,9 +160,10 @@ cd jobs_portal
 
 The rest of the guide assumes your working directory is `/opt/oakvale/jobs_portal`.
 
-> **Why the source is on the VPS:** the production Compose file bind-mounts `../backend` and
-> `../frontend` into the containers and builds against the current tree. To deploy a new
-> version you `git pull` here and rebuild (see section 7).
+> **Why the source is on the VPS:** the production images are **built on the server** from the
+> checked-out tree (`docker compose ... build` runs the multi-stage Dockerfiles). The build
+> output is baked into the images — there are **no source bind-mounts** and nothing is compiled
+> at container startup. To deploy a new version you `git pull` here and rebuild (see section 7).
 
 ---
 
@@ -233,213 +234,131 @@ openssl rand -hex 32
 
 ### 4.1 Change the default database password
 
-The Postgres service in `infra/docker-compose.yml` currently hard-codes
-`POSTGRES_PASSWORD: oakvale`. **Change this before exposing the server.** Either:
+The `postgres` service now reads its credentials from the environment
+(`POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB`, defaulting to `oakvale` for local
+dev). **Set a strong `POSTGRES_PASSWORD` in `.env` before exposing the server**, and make the
+`DATABASE_URL` in the same `.env` use the **same** user/password/db, e.g.:
 
-- **Option A (edit Compose):** update `POSTGRES_USER` / `POSTGRES_PASSWORD` /
-  `POSTGRES_DB` in `infra/docker-compose.yml`, and make `DATABASE_URL` in `.env` match; or
-- **Option B (parameterise):** replace the hard-coded values with env references, e.g.
-  `POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}`, and set `POSTGRES_PASSWORD` in `.env` alongside
-  a matching `DATABASE_URL`.
+```dotenv
+POSTGRES_USER=oakvale
+POSTGRES_PASSWORD=<strong-db-password>
+POSTGRES_DB=oakvale_jobs
+DATABASE_URL=postgresql://oakvale:<strong-db-password>@postgres:5432/oakvale_jobs
+```
 
-The Postgres username, password, and database name in `DATABASE_URL` **must** match the
-`postgres` service config, or the backend cannot connect.
+The credentials in `DATABASE_URL` **must** match the `POSTGRES_*` values, or the backend
+cannot connect.
 
 ---
 
-## 5. First deploy over HTTP (validate before adding TLS)
+## 5. First deploy — app services (validate before adding TLS)
 
-Bring up the full production stack:
+The production `nginx` serves TLS and references a certificate that doesn't exist yet, so on a
+**fresh** server bring up everything **except nginx** first, validate, then issue the cert and
+start nginx in section 6:
 
 ```bash
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d --build
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml \
+  up -d --build postgres redis backend frontend
 ```
 
-This builds the images and starts everything with `restart: unless-stopped`. The developer
-GUI tools (Adminer, Redis Commander) are parked behind a `tools` profile and **do not**
-start here.
+This builds the multi-stage images and starts the app services with `restart: unless-stopped`.
+The developer GUI tools (Adminer, Redis Commander) live in the **dev** override only and do not
+exist in production.
+
+> On later redeploys (once a cert exists) you can bring up the whole stack in one go with
+> `... up -d --build`.
 
 ### 5.1 Migrations run automatically
 
-The production backend command is `npm run db:migrate && npm run build && npm run start`, so
-schema migrations are applied on every backend start. Watch the backend come up:
+The backend image's start command is
+`node dist/backend/src/shared/db/migrate.js && node dist/backend/src/app.js`, so schema
+migrations (compiled, no `tsx`) are applied on every backend start. Watch it come up:
 
 ```bash
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml logs -f backend
 ```
 
-Wait until it reports the server is listening and healthy (the first boot builds TypeScript,
-so give it a minute).
+Wait until it reports the server is listening and the container is healthy. Unlike before,
+TypeScript is **already compiled into the image** at build time — nothing is built at startup.
 
 ### 5.2 Seed the first admin and reference data
 
-Seeds are **not** run automatically. Run them inside the backend container (this is the
-required convention — run seeds/migrations in-container, never from the host):
+Seeds are **not** run automatically. The runtime image has no `tsx`, so run the **compiled**
+seed scripts (from `dist/`) inside the backend container (run seeds/migrations in-container,
+never from the host):
 
 ```bash
 # Minimum: create the first admin login
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml \
-  exec backend npm run db:seed-admin
+  exec backend node dist/backend/src/shared/db/seed-admin.js
 
-# Reference data (workforce categories, care types, employer types, agent, etc.)
-# NOTE: db:seed-all also loads TEST data — for a clean production DB, run the
-# individual reference seeds instead of db:seed-all:
+# Reference data (workforce categories, care types, employer types, agent).
+# Run the individual reference seeds — do NOT run the test-data seed on production.
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml \
-  exec backend sh -c "npm run db:seed-categories && npm run db:seed-care-types && npm run db:seed-employer-types && npm run db:seed-agent"
+  exec backend sh -c "node dist/backend/src/shared/db/seed-categories.js && node dist/backend/src/shared/db/seed-care-types.js && node dist/backend/src/shared/db/seed-employer-types.js && node dist/backend/src/shared/db/seed-agent.js"
 ```
 
-> `db:seed-all` is convenient for staging but includes `db:seed-test` (fake workers/employers).
-> Skip it on a real production database.
+> `seed-test-data.js` loads fake workers/employers — convenient for staging, never for a real
+> production database.
 
 ### 5.3 Verify
 
 ```bash
-# Health endpoint — reports db and redis status
-curl http://<vps-ip>/health
+# Health endpoint — hit the backend directly on its host port (nginx isn't up yet).
+# BACKEND_HOST_PORT defaults to 3000; ufw keeps it off the public internet.
+curl http://localhost:3000/health
 # → {"status":"ok","db":"ok","redis":"ok"}   (or "degraded" if redis is down)
 ```
 
-Then open `http://jobs.oakvaleltd.com` in a browser. Once this works, add HTTPS.
+Once the backend reports healthy, add HTTPS (which also brings nginx up).
 
 ---
 
 ## 6. Add HTTPS with Certbot + Nginx
 
-The bundled Nginx listens on **:80 only**. We'll obtain a Let's Encrypt certificate and
-reconfigure Nginx to serve TLS on :443 and redirect HTTP → HTTPS.
+The production `infra/nginx/nginx.conf` already contains the full TLS config (`:80` serves the
+ACME challenge and 301-redirects to HTTPS; `:443` proxies the app). The prod override
+(`infra/docker-compose.prod.yml`) already publishes `:443` and mounts the certs from
+`./certbot`. All that's left is to **issue the first certificate** before starting nginx — a
+helper script does the whole dance so there's nothing to hand-edit.
 
-### 6.1 Add cert + ACME volumes to Nginx
+> **Set your domain first.** `infra/nginx/nginx.conf` references `jobs.oakvaleltd.com` in three
+> places (`server_name` ×2 and the two `ssl_certificate` paths). If you deploy under a different
+> domain, replace it there before proceeding.
 
-Edit the `nginx` service in `infra/docker-compose.prod.yml` so it can read certificates and
-serve the ACME challenge. Add these mounts (create the host directories first):
+### 6.1 Issue the first certificate
+
+From the repo root, run the bootstrap script with your domain and email. It stands up a
+throwaway HTTP-only nginx to answer the Let's Encrypt HTTP-01 challenge, requests the cert into
+`./certbot`, then tears the throwaway down:
 
 ```bash
-sudo mkdir -p /opt/oakvale/certbot/conf /opt/oakvale/certbot/www
+./infra/init-letsencrypt.sh jobs.oakvaleltd.com you@oakvaleltd.com
+# add --staging as a 3rd arg first to dry-run against Let's Encrypt staging
 ```
 
-```yaml
-# infra/docker-compose.prod.yml
-  nginx:
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ../infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /opt/oakvale/certbot/conf:/etc/letsencrypt:ro
-      - /opt/oakvale/certbot/www:/var/www/certbot:ro
-```
+Prerequisites: `jobs.oakvaleltd.com` must already resolve to this server's public IP (`dig
++short jobs.oakvaleltd.com`), and port 80 must be open (ufw allows it). On success the cert is
+at `./certbot/conf/live/jobs.oakvaleltd.com/`.
 
-> The base `nginx` service only publishes `80`. Re-declaring `ports` and `volumes` in the
-> prod override (as above) is what exposes `443` and mounts the certs in production.
-
-### 6.2 Serve the ACME challenge (temporary HTTP config)
-
-Before a certificate exists, Nginx must answer the HTTP-01 challenge. Add this `location` to
-the existing `server { listen 80; ... }` block in `infra/nginx/nginx.conf`:
-
-```nginx
-    location /.well-known/acme-challenge/ {
-      root /var/www/certbot;
-    }
-```
-
-Apply the change and reload:
+### 6.2 Start nginx (TLS)
 
 ```bash
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d nginx
 ```
 
-### 6.3 Issue the certificate
+Verify `https://jobs.oakvaleltd.com` loads and `https://jobs.oakvaleltd.com/health` returns
+`{"status":"ok",...}`, and that plain HTTP 301-redirects to HTTPS.
 
-Run a one-off Certbot container that writes into the shared volumes:
+### 6.3 Auto-renew
 
-```bash
-docker run --rm \
-  -v /opt/oakvale/certbot/conf:/etc/letsencrypt \
-  -v /opt/oakvale/certbot/www:/var/www/certbot \
-  certbot/certbot certonly --webroot -w /var/www/certbot \
-  -d jobs.oakvaleltd.com \
-  --email you@oakvaleltd.com --agree-tos --no-eff-email
-```
-
-On success the cert lives at `/opt/oakvale/certbot/conf/live/jobs.oakvaleltd.com/`.
-
-### 6.4 Switch Nginx to HTTPS
-
-Replace `infra/nginx/nginx.conf` with the TLS version below (keeps the existing routing:
-`/api/` and `/health` → backend, everything else → frontend, 12 MB upload limit):
-
-```nginx
-events {}
-
-http {
-  resolver 127.0.0.11 valid=10s ipv6=off;
-
-  # HTTP: serve ACME challenge, redirect everything else to HTTPS
-  server {
-    listen 80;
-    server_name jobs.oakvaleltd.com;
-
-    location /.well-known/acme-challenge/ {
-      root /var/www/certbot;
-    }
-
-    location / {
-      return 301 https://$host$request_uri;
-    }
-  }
-
-  # HTTPS
-  server {
-    listen 443 ssl;
-    server_name jobs.oakvaleltd.com;
-    client_max_body_size 12M;
-
-    ssl_certificate     /etc/letsencrypt/live/jobs.oakvaleltd.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jobs.oakvaleltd.com/privkey.pem;
-
-    location /api/ {
-      set $upstream_backend backend:3000;
-      proxy_pass http://$upstream_backend;
-      proxy_http_version 1.1;
-      proxy_set_header Host $host;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /health {
-      set $upstream_backend backend:3000;
-      proxy_pass http://$upstream_backend/health;
-    }
-
-    location / {
-      set $upstream_frontend frontend:3000;
-      proxy_pass http://$upstream_frontend;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
-      proxy_set_header Host $host;
-    }
-  }
-}
-```
-
-Reload:
-
-```bash
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d nginx
-```
-
-Verify `https://jobs.oakvaleltd.com` loads and `https://jobs.oakvaleltd.com/health` returns `ok`.
-
-### 6.5 Auto-renew
-
-Let's Encrypt certs last 90 days. Add a cron job (run `crontab -e` as `preacher`) that renews
-and reloads Nginx:
+Let's Encrypt certs last 90 days. Add a cron job (run `crontab -e` as the deploy user) that
+renews and reloads nginx. Note the `-T` on `docker compose exec` — cron has no TTY, and paths
+must match your clone location:
 
 ```cron
-0 3 * * * docker run --rm -v /opt/oakvale/certbot/conf:/etc/letsencrypt -v /opt/oakvale/certbot/www:/var/www/certbot certbot/certbot renew --quiet && docker compose -f /opt/oakvale/jobs_portal/infra/docker-compose.yml -f /opt/oakvale/jobs_portal/infra/docker-compose.prod.yml exec nginx nginx -s reload
+0 3 * * * docker run --rm -v /opt/oakvale/jobs_portal/certbot/conf:/etc/letsencrypt -v /opt/oakvale/jobs_portal/certbot/www:/var/www/certbot certbot/certbot renew --quiet && docker compose -f /opt/oakvale/jobs_portal/infra/docker-compose.yml -f /opt/oakvale/jobs_portal/infra/docker-compose.prod.yml exec -T nginx nginx -s reload
 ```
 
 ---
@@ -472,8 +391,10 @@ dcp down                      # stop the stack (named volumes persist data)
 
 ### Run migrations manually
 
+The runtime image has no `tsx` — run the compiled migrate script:
+
 ```bash
-dcp exec backend npm run db:migrate
+dcp exec backend node dist/backend/src/shared/db/migrate.js
 ```
 
 ### Database backups
@@ -494,20 +415,35 @@ wipe the database.
 
 ## 8. Troubleshooting & known limitations
 
-- **Frontend runs `next dev` in production (known).** The production override intentionally
-  keeps the frontend on the dev command because a clean `next build` currently fails while
-  static-exporting Next's internal error pages (`/_error` → `/404`, `/500`) — a
-  framework/config issue unrelated to app code (all real pages build). This is the currently
-  supported production path; switching to `next build && next start` is tracked tech debt.
-  See the comment block in `infra/docker-compose.prod.yml`.
+- **Production images are baked, not mounted.** Both services build via multi-stage Dockerfiles;
+  the runtime images run compiled output (`node dist/...` / `next start`) with **no** source
+  bind-mounts and **no** build-at-startup. If a code change isn't reflected, you forgot
+  `--build` — always deploy with `dcp up -d --build`.
+- **nginx crashes on start with "cannot load certificate":** the cert doesn't exist yet. On a
+  fresh box, run `./infra/init-letsencrypt.sh` (§6.1) **before** starting nginx, or bring up the
+  app services without nginx first (§5).
 - **Change the default Postgres password** (§4.1) before the server is reachable from the
   internet. The repo ships with `oakvale:oakvale` for local dev only.
 - **Nginx is the only TLS terminator here.** If you later put a managed load balancer or
   Cloudflare in front, terminate TLS there and keep the container Nginx on plain `:80`.
-- **Backend won't start / DB connection errors:** confirm `DATABASE_URL` in `.env` matches
-  the Postgres service credentials exactly (user, password, `@postgres:5432`, db name).
+- **Backend won't start / DB connection errors:** confirm `DATABASE_URL` in `.env` matches the
+  `POSTGRES_*` credentials exactly (user, password, `@postgres:5432`, db name).
+- **Backend exits with "Invalid environment variables … required in production":** in
+  production the app requires the real S3/Stripe/Paystack secrets (`S3_PUBLIC_URL`,
+  `STRIPE_*`, `PAYSTACK_*`). Fill them in `.env` — the guard is intentional.
 - **`/health` returns `degraded`:** the `db` or `redis` field will show `down` — check
   `dcp logs postgres` / `dcp logs redis` and that both are healthy in `dcp ps`.
-- **Frontend can't reach the API:** verify `NEXT_PUBLIC_API_URL=https://jobs.oakvaleltd.com/api/v1`
-  (public) and `INTERNAL_API_URL=http://backend:3000/api/v1` (internal), then rebuild the
-  frontend (`dcp up -d --build frontend`).
+- **Frontend can't reach the API:** `NEXT_PUBLIC_API_URL` is baked into the client bundle **at
+  build time**, so after changing it you must rebuild the frontend image
+  (`dcp up -d --build frontend`), not just restart it. Verify it's the public URL
+  (`https://jobs.oakvaleltd.com/api/v1`) and `INTERNAL_API_URL=http://backend:3000/api/v1`.
+
+### Local development
+
+Development uses a separate override that restores hot-reload (bind-mounts, `tsx watch` /
+`next dev`) and the Adminer + Redis Commander GUIs:
+
+```bash
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml up --build
+# or simply: npm run dev
+```
