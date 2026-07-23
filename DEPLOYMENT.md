@@ -24,8 +24,8 @@ top of the bundled Nginx.
   `portal.oakvaleltd.com → 203.0.113.10`). HTTPS issuance in section 6 requires this.
 - **SSH access** with a sudo-capable user (steps below create one if you only have root).
 
-Throughout this guide, replace `<domain>` with your real domain and `<vps-ip>` with the
-server IP.
+This guide is written for the production domain **`jobs.oakvaleltd.com`**. Replace `<vps-ip>`
+with your server's public IP where it appears.
 
 ---
 
@@ -39,48 +39,79 @@ apt update && apt upgrade -y
 
 ### 2.1 Create a non-root sudo user
 
+This guide uses an admin user named **`preacher`** — substitute your own name if different,
+but use it **consistently** everywhere below.
+
 ```bash
-adduser deploy
-usermod -aG sudo deploy
-# copy your SSH key so you can log in as deploy
-rsync --archive --chown=deploy:deploy ~/.ssh /home/deploy
+adduser preacher                    # skip if the user already exists
+usermod -aG sudo preacher           # grant sudo
 ```
 
-Log out and back in as `deploy` for the rest of this guide.
-
-### 2.1a Disable root SSH login
-
-> **Do this only after** confirming you can SSH in as `deploy` with your key — otherwise you
-> can lock yourself out. Test in a **separate** terminal: `ssh deploy@<vps-ip>`.
-
-Harden the SSH daemon so root cannot log in and password auth is off (key-only):
+Give the user your SSH public key so you can log in without a password. **The keys must land
+in that user's own home directory** (`/home/preacher`) — a common mistake is copying to a
+different path (e.g. `/home/deploy`), which leaves the account with no `authorized_keys` and
+no way to log in:
 
 ```bash
+# copies root's authorized_keys so the same key works for preacher
+rsync --archive --chown=preacher:preacher ~/.ssh /home/preacher
+ls -la /home/preacher/.ssh          # confirm authorized_keys is present here
+```
+
+Also set a password as a fallback in case key auth has any issue:
+
+```bash
+passwd preacher
+```
+
+> ⚠️ **Do NOT disable root/password login yet.** First prove you can get in as `preacher`
+> (next step). Locking down before verifying is the #1 way people lock themselves out.
+
+### 2.1a Verify the new user, THEN harden SSH
+
+**Keep your current root session open.** In a **separate** terminal, log in as the new user
+and confirm sudo works:
+
+```bash
+ssh preacher@<vps-ip>
+sudo whoami          # must print: root
+```
+
+Only once that works, harden the SSH daemon. On Ubuntu cloud images the effective setting
+often comes from a drop-in file (`/etc/ssh/sshd_config.d/50-cloud-init.conf`) that
+**silently overrides** the main `sshd_config` — so you must fix both. First see what's set:
+
+```bash
+grep -R "PermitRootLogin\|PasswordAuthentication" /etc/ssh/sshd_config /etc/ssh/sshd_config.d/
+```
+
+Then disable root login and password auth in the main config **and** in the cloud-init
+drop-in if it re-enables them:
+
+```bash
+# main config
 sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-sudo sshd -t          # validate config before applying
+
+# cloud-init drop-in (only exists on some images) — the one that actually wins
+sudo sed -i 's/^PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config.d/50-cloud-init.conf 2>/dev/null || true
+
+sudo sshd -t                        # validate config — must print nothing
 sudo systemctl restart ssh
 ```
 
-Some cloud images drop overrides into `/etc/ssh/sshd_config.d/*.conf` (e.g. a
-`50-cloud-init.conf` that re-enables `PasswordAuthentication`). If your change doesn't take
-effect, check and fix those files too:
-
-```bash
-grep -R "PermitRootLogin\|PasswordAuthentication" /etc/ssh/sshd_config.d/
-```
-
-Keep your current session open and verify a **fresh** `ssh deploy@<vps-ip>` still works
-before closing it. Root login and password logins are now refused.
+**Verify before closing anything.** From a fresh terminal: `ssh preacher@<vps-ip>` should
+still work with your key (no password prompt), and `ssh root@<vps-ip>` should now be
+**refused**. Keep the working session open until you've confirmed this.
 
 ### 2.2 Install Docker Engine + Compose plugin
 
 ```bash
 curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker deploy
+sudo usermod -aG docker preacher
 ```
 
-Log out and back in so the `docker` group membership applies, then verify:
+Log out and back in as `preacher` so the `docker` group membership applies, then verify:
 
 ```bash
 docker --version
@@ -121,7 +152,7 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 ```bash
 sudo mkdir -p /opt/oakvale
-sudo chown deploy:deploy /opt/oakvale
+sudo chown preacher:preacher /opt/oakvale
 cd /opt/oakvale
 git clone <your-repo-url> jobs_portal
 cd jobs_portal
@@ -151,7 +182,7 @@ Set production values. At minimum:
 # App
 NODE_ENV=production
 PORT=3000
-APP_URL=https://<domain>
+APP_URL=https://jobs.oakvaleltd.com
 
 # Database — password MUST match the Postgres service (see §4.1)
 DATABASE_URL=postgresql://oakvale:<strong-db-password>@postgres:5432/oakvale_jobs
@@ -166,7 +197,7 @@ JWT_ACCESS_TTL_SECONDS=900
 JWT_REFRESH_TTL_SECONDS=604800
 
 # Frontend API URLs
-NEXT_PUBLIC_API_URL=https://<domain>/api/v1
+NEXT_PUBLIC_API_URL=https://jobs.oakvaleltd.com/api/v1
 INTERNAL_API_URL=http://backend:3000/api/v1
 
 # S3 / Cloudflare R2 — required in production
@@ -268,7 +299,7 @@ curl http://<vps-ip>/health
 # → {"status":"ok","db":"ok","redis":"ok"}   (or "degraded" if redis is down)
 ```
 
-Then open `http://<domain>` in a browser. Once this works, add HTTPS.
+Then open `http://jobs.oakvaleltd.com` in a browser. Once this works, add HTTPS.
 
 ---
 
@@ -328,11 +359,11 @@ docker run --rm \
   -v /opt/oakvale/certbot/conf:/etc/letsencrypt \
   -v /opt/oakvale/certbot/www:/var/www/certbot \
   certbot/certbot certonly --webroot -w /var/www/certbot \
-  -d <domain> \
+  -d jobs.oakvaleltd.com \
   --email you@oakvaleltd.com --agree-tos --no-eff-email
 ```
 
-On success the cert lives at `/opt/oakvale/certbot/conf/live/<domain>/`.
+On success the cert lives at `/opt/oakvale/certbot/conf/live/jobs.oakvaleltd.com/`.
 
 ### 6.4 Switch Nginx to HTTPS
 
@@ -348,7 +379,7 @@ http {
   # HTTP: serve ACME challenge, redirect everything else to HTTPS
   server {
     listen 80;
-    server_name <domain>;
+    server_name jobs.oakvaleltd.com;
 
     location /.well-known/acme-challenge/ {
       root /var/www/certbot;
@@ -362,11 +393,11 @@ http {
   # HTTPS
   server {
     listen 443 ssl;
-    server_name <domain>;
+    server_name jobs.oakvaleltd.com;
     client_max_body_size 12M;
 
-    ssl_certificate     /etc/letsencrypt/live/<domain>/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/<domain>/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/jobs.oakvaleltd.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jobs.oakvaleltd.com/privkey.pem;
 
     location /api/ {
       set $upstream_backend backend:3000;
@@ -400,11 +431,11 @@ Reload:
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d nginx
 ```
 
-Verify `https://<domain>` loads and `https://<domain>/health` returns `ok`.
+Verify `https://jobs.oakvaleltd.com` loads and `https://jobs.oakvaleltd.com/health` returns `ok`.
 
 ### 6.5 Auto-renew
 
-Let's Encrypt certs last 90 days. Add a cron job (run `crontab -e` as `deploy`) that renews
+Let's Encrypt certs last 90 days. Add a cron job (run `crontab -e` as `preacher`) that renews
 and reloads Nginx:
 
 ```cron
@@ -477,6 +508,6 @@ wipe the database.
   the Postgres service credentials exactly (user, password, `@postgres:5432`, db name).
 - **`/health` returns `degraded`:** the `db` or `redis` field will show `down` — check
   `dcp logs postgres` / `dcp logs redis` and that both are healthy in `dcp ps`.
-- **Frontend can't reach the API:** verify `NEXT_PUBLIC_API_URL=https://<domain>/api/v1`
+- **Frontend can't reach the API:** verify `NEXT_PUBLIC_API_URL=https://jobs.oakvaleltd.com/api/v1`
   (public) and `INTERNAL_API_URL=http://backend:3000/api/v1` (internal), then rebuild the
   frontend (`dcp up -d --build frontend`).
