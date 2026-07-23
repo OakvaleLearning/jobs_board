@@ -43,6 +43,13 @@ services:
 
   nginx:
     restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/oakvale/certbot/conf:/etc/letsencrypt:ro
+      - /opt/oakvale/certbot/www:/var/www/certbot:ro
 
   # Developer GUIs are excluded from production by parking them behind a profile
   # that the prod `up` command never activates.
