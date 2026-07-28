@@ -2,7 +2,7 @@
 
 import { isProtectedPath } from './auth-paths';
 
-const PUBLIC_API = process.env.NEXT_PUBLIC_API_URL ?? '/api/v1';
+const PUBLIC_API = process.env.NEXT_PUBLIC_API_URL?.trim() || '/api/v1';
 
 type Json = Record<string, unknown> | unknown[];
 
