@@ -47,7 +47,7 @@ const Hero = () => {
     return () => window.clearInterval(id);
   }, []);
 
-  const slide = slides[active];
+  const slide = slides[active]!;
 
   return (
     <section className="relative isolate overflow-hidden bg-brand-800">
