@@ -8,6 +8,7 @@ import type {
 import type {
   CreateAgentInput,
   UpdateAgentInput,
+  UpdateAgentSelfInput,
   CreateAssignmentInput,
 } from '@oakvale/shared/schema/admin';
 import type { VisibilityStatus } from '@oakvale/shared/enums/worker';
@@ -49,6 +50,12 @@ export interface AgentRow {
 }
 export interface AgentDetail extends AgentRow {
   assignments: AgentAssignment[];
+}
+
+/** Self-serve staff record: pure ADMINs have no agent profile, so it may be null. */
+export interface StaffSelf {
+  user: AgentUser;
+  profile: AgentProfile | null;
 }
 
 export interface WorkerRosterRow {
@@ -153,6 +160,9 @@ function qs(params: Record<string, unknown>): string {
 }
 
 export const adminApi = {
+  me: () => api.get<{ data: StaffSelf }>('/admin/me').then((r) => r.data),
+  updateMe: (patch: UpdateAgentSelfInput) =>
+    api.patch<{ data: StaffSelf }>('/admin/me', patch as Record<string, unknown>).then((r) => r.data),
   agents: {
     list: (filters: { specialty?: AgentSpecialty; active?: boolean; page?: number } = {}) =>
       api

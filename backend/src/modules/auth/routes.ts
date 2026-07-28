@@ -1,15 +1,18 @@
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import {
+  changePasswordSchema,
   forgotSchema,
   loginSchema,
   refreshSchema,
   registerSchema,
   resendVerificationSchema,
   resetSchema,
+  updateAccountSchema,
   verifyEmailSchema,
 } from '@oakvale/shared/schema/auth.js';
 import { createAuthService } from './service.js';
 import { verifyTurnstile } from '@/shared/security/turnstile.js';
+import { AppError } from '@/shared/errors/app-error.js';
 import type { Role } from '@oakvale/shared/roles.js';
 
 export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
@@ -92,6 +95,33 @@ export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   });
 
   app.get('/me', { preHandler: app.requireAuth }, async (req) => {
-    return { data: { user: req.user } };
+    const userId = (req.user as { sub?: string } | undefined)?.sub;
+    if (!userId) throw new AppError({ code: 'UNAUTHORIZED', message: 'Auth required.', statusCode: 401 });
+    const user = await service.getAccount(userId);
+    return {
+      data: {
+        user: { id: user.id, email: user.email, fullName: user.fullName, phone: user.phone, role: user.role as Role },
+      },
+    };
+  });
+
+  app.patch('/me', { preHandler: app.requireAuth }, async (req) => {
+    const userId = (req.user as { sub?: string } | undefined)?.sub;
+    if (!userId) throw new AppError({ code: 'UNAUTHORIZED', message: 'Auth required.', statusCode: 401 });
+    const input = updateAccountSchema.parse(req.body);
+    const user = await service.updateAccount(userId, input);
+    return {
+      data: {
+        user: { id: user.id, email: user.email, fullName: user.fullName, phone: user.phone, role: user.role as Role },
+      },
+    };
+  });
+
+  app.post('/change-password', { ...otpRateLimit, preHandler: app.requireAuth }, async (req) => {
+    const userId = (req.user as { sub?: string } | undefined)?.sub;
+    if (!userId) throw new AppError({ code: 'UNAUTHORIZED', message: 'Auth required.', statusCode: 401 });
+    const input = changePasswordSchema.parse(req.body);
+    await service.changePassword(userId, input.currentPassword, input.newPassword);
+    return { data: { changed: true } };
   });
 };

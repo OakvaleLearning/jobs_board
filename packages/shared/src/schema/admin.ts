@@ -21,6 +21,17 @@ export const updateAgentSchema = z.object({
 });
 export type UpdateAgentInput = z.infer<typeof updateAgentSchema>;
 
+/**
+ * Self-serve agent profile edit. Mirrors updateAgentSchema but deliberately omits
+ * `isActive` — an agent must not be able to (de)activate their own account.
+ */
+export const updateAgentSelfSchema = z.object({
+  specialty: z.enum(AGENT_SPECIALTIES).optional(),
+  region: z.string().trim().max(120).nullish(),
+  bio: z.string().trim().max(2000).nullish(),
+});
+export type UpdateAgentSelfInput = z.infer<typeof updateAgentSelfSchema>;
+
 export const createAssignmentSchema = z
   .object({
     placementId: z.string().uuid().optional(),

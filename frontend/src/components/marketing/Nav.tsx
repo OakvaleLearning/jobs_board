@@ -72,10 +72,11 @@ export function Nav() {
   const photoUrl = selfieUrl.data?.downloadUrl ?? null;
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-ink/8 shadow-[0_1px_0_rgba(5,150,105,0.06)]">
+    <header className="sticky top-0 z-30 bg-cream-50/70 backdrop-blur-xl border-b border-ink/8 shadow-[0_1px_0_rgba(5,150,105,0.06)] supports-[backdrop-filter]:bg-cream-50/70">
       <div className="mx-auto w-4/5 px-6 h-16 flex items-center justify-between">
         <Lockup size="md" />
         <nav className="hidden md:flex items-center gap-8 text-sm text-ink-600">
+          <Link href="#about" className="hover:text-ink transition">About</Link>
           <Link href="#workers" className="hover:text-ink transition">For carers</Link>
           <Link href="#employers" className="hover:text-ink transition">For employers</Link>
           <Link href="#trust" className="hover:text-ink transition">How we verify</Link>

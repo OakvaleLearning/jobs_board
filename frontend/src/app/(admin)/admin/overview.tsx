@@ -44,7 +44,7 @@ export function AdminOverview() {
         }
       />
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="stagger grid md:grid-cols-2 lg:grid-cols-4 gap-5">
         <Kpi label="Pending verification" value={pending} sub="awaiting agent review" />
         <Kpi label="Background docs to review" value={bgPending} sub="awaiting admin review" />
         <Kpi label="Replacements open" value={activeReplacements} sub={`${slaAtRisk} at risk · ${slaBreached} breached`} />

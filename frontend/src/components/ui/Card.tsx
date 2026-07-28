@@ -13,12 +13,15 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
   default: 'rounded-2xl bg-white border border-ink/[0.06] shadow-card',
-  glass: 'rounded-2xl bg-white border border-ink/8 shadow-card',
+  // Frosted surface: translucent white + backdrop blur for a layered, modern feel
+  // over the atmospheric page wash.
+  glass: 'rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 shadow-glass',
   brand: 'rounded-2xl bg-brand-50 border border-brand-200 shadow-brandLift',
   amber: 'rounded-2xl bg-amber-50 border border-amber-200 shadow-amberLift',
   teal: 'rounded-2xl bg-teal-50 border border-teal-200 shadow-tealLift',
   sage: 'rounded-2xl bg-sage-50 border border-sage-200 shadow-sageLift',
-  gradient: 'rounded-2xl bg-brand-500 text-white border border-brand-600 shadow-card',
+  // Rich gradient surface for hero/feature cards (was a flat brand fill).
+  gradient: 'rounded-2xl bg-gradient-brand text-white border border-brand-600/40 shadow-brandLift',
 };
 
 export function Card({

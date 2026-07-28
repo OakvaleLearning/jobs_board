@@ -3,9 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --cream-50: #f6f5f5;
-  --cream-100: #eceaea;
-  --cream-200: #797979;
+  /* Warm cream scale — kept in lock-step with the Tailwind `cream` palette so
+     CSS-var surfaces (body, table borders) and utility classes never diverge. */
+  --cream-50: #FDFBF7;
+  --cream-100: #FAF6F0;
+  --cream-200: #F2EBDF;
+  --cream-300: #E6DAC6;
   --ink: #1C1A17;
   --terracotta: #B5532A;
   --sage: #2E8F67;
@@ -28,8 +31,26 @@ html, body {
 }
 
 body {
-  /* Flat theme: solid cream surface (was a multi-colour radial/conic wash). */
-  background-image: none;
+  /* Subtle atmospheric wash: a barely-there warm-to-white vertical fade plus a
+     faint emerald aura top-left, so large surfaces feel less flat. Kept very
+     low-contrast to stay comfortably within WCAG AA against ink text. */
+  background-image:
+    radial-gradient(1100px 620px at 12% -8%, rgba(5, 150, 105, 0.045), transparent 60%),
+    linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 42%);
+  background-attachment: fixed;
+}
+
+/* Honour reduced-motion: disable entrance animations and long transitions for
+   users who opt out, while keeping instant state changes usable. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 ::selection {
@@ -88,10 +109,27 @@ body {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Staggered entrance for grids/lists. Wrap items in `.stagger` and each direct
+     child animates in sequence — no per-item delay classes needed at call sites.
+     Pairs with the `rise` keyframe. */
+  .stagger > * {
+    animation: rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger > *:nth-child(2) { animation-delay: 55ms; }
+  .stagger > *:nth-child(3) { animation-delay: 110ms; }
+  .stagger > *:nth-child(4) { animation-delay: 165ms; }
+  .stagger > *:nth-child(5) { animation-delay: 220ms; }
+  .stagger > *:nth-child(6) { animation-delay: 275ms; }
+  .stagger > *:nth-child(7) { animation-delay: 330ms; }
+  .stagger > *:nth-child(8) { animation-delay: 385ms; }
 }
 
 @layer base {
-  /* Ensure all tables have a white surface for readability across the app */
+  /* Modern table base: white surface, horizontal-only hairlines (no boxed cell
+     grid), a soft tinted header, and a gentle row hover. Applies app-wide so
+     every admin/employer roster upgrades without per-table edits. */
   table {
     background-color: #ffffff;
     color: inherit;
@@ -99,22 +137,31 @@ body {
     border-spacing: 0;
   }
 
-  /* Table cells inherit the white background to avoid transparent bleed-through */
   table th,
   table td {
-    background-color: #ffffff;
-    border: 1px solid var(--cream-100);
-    padding: 0.5rem 0.75rem;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(28, 26, 23, 0.06);
+    padding: 0.75rem 1rem;
+    text-align: left;
   }
 
-  /* Slightly stronger header border and weight */
+  /* Header: subtle warm tint + slightly firmer rule. Typography (the eyebrow
+     label style) is owned by the Table primitive's utility classes, which win
+     over these base rules by Tailwind's layer order — so we set surface only. */
   table thead th {
-    border-bottom: 2px solid var(--cream-200);
-    font-weight: 600;
+    background-color: var(--cream-50);
+    border-bottom: 1px solid rgba(28, 26, 23, 0.10);
   }
 
-  /* Make stripped rows explicit if a caller doesn't provide styles */
-  table tr:nth-child(even) td {
-    background-color: #ffffff;
+  /* Rows lift softly on hover for scannability; last row drops its rule. */
+  table tbody tr {
+    transition: background-color 160ms ease;
+  }
+  table tbody tr:hover td {
+    background-color: rgba(5, 150, 105, 0.035);
+  }
+  table tbody tr:last-child td {
+    border-bottom: 0;
   }
 }

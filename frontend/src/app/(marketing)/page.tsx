@@ -16,6 +16,34 @@ export default function LandingPage() {
       {/* Hero */}
       <Hero />
 
+      {/* About */}
+      <section id="about" className="mx-auto w-4/5 px-6 py-20">
+        <div className="grid md:grid-cols-12 gap-10 items-start">
+          <div className="md:col-span-7">
+            <p className="text-eyebrow text-sage-600">About Oakvale</p>
+            <h2 className="h-display text-3xl md:text-4xl mt-2 leading-tight">
+              A credentialed staffing marketplace, not a jobs board.
+            </h2>
+            <p className="mt-5 text-ink-600 leading-relaxed">
+              Oakvale Learning connects two employer pipelines, diaspora families in the UK and US
+              caring for loved ones back home, and Nigerian corporates building workplace
+              cr&egrave;ches, with verified, CPD-accredited Nigerian care and childcare workers.
+            </p>
+            <p className="mt-4 text-ink-600 leading-relaxed">
+              We are trust-and-credentials infrastructure layered with a marketplace. Every worker
+              is identity-verified, background-checked and Oakvale-certified before their profile is
+              ever visible, because we measure success by placement quality, not volume.
+            </p>
+          </div>
+          <div className="md:col-span-5 stagger grid sm:grid-cols-2 gap-4">
+            <AboutStat value="2" label="Employer pipelines served" />
+            <AboutStat value="CPD" label="Accredited worker pool" />
+            <AboutStat value="Fully" label="Managed placement lifecycle" />
+            <AboutStat value="90 day" label="Replacement guarantee" />
+          </div>
+        </div>
+      </section>
+
       {/* Trust pillars */}
       <section id="trust" className="bg-white">
         <div className="mx-auto w-4/5 px-6 py-20">
@@ -23,30 +51,30 @@ export default function LandingPage() {
           <p className="text-eyebrow text-sage-600">Our readiness to serve</p>
           <h2 className="h-display text-3xl md:text-4xl mt-2">We do the heavy lifting.</h2>
           <p className="mt-4 text-ink-600 leading-relaxed">
-            Everything vetted, managed and tracked &mdash; so you hire with total confidence.
+            Everything vetted, managed and tracked, so you hire with total confidence.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="stagger grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Pillar
             number="01"
             icon={ShieldCheck}
             accent="brand"
-            title="Pre-vetted, credentialed pool"
-            body="No sifting through unqualified resumes. Only workers holding a valid Oakvale certificate &mdash; or actively completing our training-to-hire pathway &mdash; appear as verified."
+            title="Vetted, credentialed pool"
+            body="No sifting through unqualified resumes. Only workers holding a valid Oakvale certificate, or actively completing our training to hire pathway, appear as verified."
           />
           <Pillar
             number="02"
             icon={FileSearch}
             accent="teal"
             title="Comprehensive background checks"
-            body="Police character certificate, guarantor letter and sworn affidavit &mdash; reviewed by Oakvale&rsquo;s team, with a Clear badge displayed on every verified profile."
+            body="Police character certificate, guarantor letter and sworn affidavit, reviewed by Oakvale&rsquo;s team, with a Clear badge displayed on every verified profile."
           />
           <Pillar
             number="03"
             icon={Handshake}
             accent="amber"
-            title="End-to-end managed service"
-            body="Account Managers, Liaison Nurses and Recruiters run the whole placement lifecycle &mdash; facilitating interviews, drafting tailored contracts, overseeing onboarding."
+            title="Fully managed service"
+            body="Account Managers, Liaison Nurses and Recruiters run the whole placement lifecycle, facilitating interviews, drafting tailored contracts, overseeing onboarding."
           />
           <Pillar
             number="04"
@@ -61,22 +89,22 @@ export default function LandingPage() {
 
       {/* Two pipelines split */}
       <section id="employers" className="mx-auto w-4/5 px-6 py-20">
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="stagger grid md:grid-cols-2 gap-6">
           <PipelineCard
             eyebrow="Nigerian corporates & institutions"
             title="Build your workplace crèche with confidence."
-            body="Certified childcare workers trained in early-years development, child safeguarding, infant care and SEND awareness. Search, shortlist and hire with self-service job posting, or partner annually with a dedicated employer portal and a training-to-hire pathway via Oakvale's LMS."
+            body="Certified childcare workers trained in early years development, child safeguarding, infant care and SEND awareness. Search, shortlist and hire with self service job posting, or partner annually with a dedicated employer portal and a training to hire pathway via Oakvale's LMS."
             cta="Explore corporate partnership"
             href="/register?type=CORPORATE"
-            chips={['Certified childcare workers', 'Self-service job posting', 'Training-to-hire pathway']}
+            chips={['Certified childcare workers', 'Self service job posting', 'Training to hire pathway']}
           />
           <PipelineCard
             eyebrow="Diaspora families (UK & US)"
             title="Care for your loved ones back home, handled."
-            body="Complete a Care Needs Assessment and a dedicated Account Manager matches you with a certified caregiver trained in elderly care, medication management and post-surgical support. Pay in GBP or USD and rest easy knowing your family is in safe hands."
+            body="Complete a Care Needs Assessment and a dedicated Account Manager matches you with a certified caregiver trained in elderly care, medication management and post surgical support. Pay in GBP or USD and rest easy knowing your family is in safe hands."
             cta="Start a care assessment"
             href="/register?type=INDIVIDUAL_EMPLOYER"
-            chips={['High-touch managed service', 'GBP / USD payments', 'Monthly welfare reports']}
+            chips={['High touch managed service', 'GBP / USD payments', 'Monthly welfare reports']}
           />
         </div>
       </section>
@@ -86,9 +114,9 @@ export default function LandingPage() {
         <Card className="bg-brand-700 text-cream-50 p-10 md:p-12">
           <div className="grid md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-8 space-y-4">
-              <p className="text-eyebrow text-cream-200/70">The Oakvale peace-of-mind guarantee</p>
+              <p className="text-eyebrow text-cream-200/70">The Oakvale peace of mind guarantee</p>
               <h2 className="h-display text-3xl md:text-4xl leading-tight">
-                90-day replacement guarantee.
+                90 day replacement guarantee.
               </h2>
               <p className="text-cream-100/90 max-w-2xl">
                 Should a placement not meet your expectations within the first 90 days, our agents
@@ -111,12 +139,12 @@ export default function LandingPage() {
               <Badge tone="amber">Live on the Jobs Board</Badge>
               <p className="text-eyebrow text-cream-200/70">For care workers</p>
               <h2 className="h-display text-3xl md:text-4xl leading-tight">
-                Get credentialed. Get placed. Get paid &mdash; in naira.
+                Get credentialed. Get placed. Get paid in naira.
               </h2>
               <p className="text-cream-100/90 max-w-xl">
                 Join a curated, high-trust marketplace where your Oakvale certification opens doors
-                with diaspora families and corporate cr&egrave;ches alike. Background-checked,
-                CPD-accredited, and visible only when verified &mdash; so employers know you mean it.
+                with diaspora families and corporate cr&egrave;ches alike. Background checked,
+                CPD accredited, and visible only when verified, so employers know you mean it.
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link href="/register?role=WORKER">
@@ -139,7 +167,7 @@ export default function LandingPage() {
         <p className="text-eyebrow text-sage-600">Ready when you are</p>
         <h2 className="h-display text-3xl md:text-5xl mt-3">Step into a world of talent today.</h2>
         <p className="mx-auto mt-5 max-w-xl text-ink-600 leading-relaxed">
-          The perfect addition to your care team or corporate facility is waiting &mdash; a hiring
+          The perfect addition to your care team or corporate facility is waiting, a hiring
           process that is secure, supported, and entirely focused on your success.
         </p>
         <div className="mt-8">
@@ -153,6 +181,15 @@ export default function LandingPage() {
 
       <Footer />
     </main>
+  );
+}
+
+function AboutStat({ value, label }: { value: string; label: string }) {
+  return (
+    <Card variant="default" className="p-6">
+      <p className="h-display text-2xl md:text-3xl text-brand-700 tabular-nums">{value}</p>
+      <p className="text-sm text-ink-600 leading-relaxed mt-2">{label}</p>
+    </Card>
   );
 }
 

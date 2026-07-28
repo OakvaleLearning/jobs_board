@@ -116,25 +116,30 @@ export default {
         sans: ['var(--font-body)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        xl: '0.875rem',
-        '2xl': '1.25rem',
-        '3xl': '1.75rem',
+        xl: '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
       },
       boxShadow: {
-        // Soft depth: a tight contact shadow layered under a soft ambient one.
-        card: '0 1px 2px rgba(28,26,23,0.04), 0 12px 28px -12px rgba(28,26,23,0.16)',
-        edge: 'inset 0 0 0 1px rgba(28,26,23,0.08)',
-        glass: '0 1px 2px rgba(28,26,23,0.04), 0 12px 28px -12px rgba(28,26,23,0.16)',
+        // Modern elevation ramp: a hairline contact shadow under a soft, wide,
+        // low-opacity ambient layer so surfaces read as gently floating rather
+        // than heavy. sm → lg escalate blur + spread, not opacity.
+        sm: '0 1px 2px rgba(28,26,23,0.04), 0 4px 12px -6px rgba(28,26,23,0.10)',
+        card: '0 1px 2px rgba(28,26,23,0.03), 0 14px 34px -18px rgba(28,26,23,0.18)',
+        lg: '0 2px 4px rgba(28,26,23,0.04), 0 28px 56px -24px rgba(28,26,23,0.22)',
+        edge: 'inset 0 0 0 1px rgba(28,26,23,0.06)',
+        glass: '0 1px 2px rgba(28,26,23,0.03), 0 20px 48px -24px rgba(28,26,23,0.18)',
         ring: '0 0 0 1px rgba(5,150,105,0.15)',
         // Deeper elevation for the opt-in hover-lift state.
-        brandLiftHover: '0 2px 4px rgba(28,26,23,0.05), 0 20px 40px -16px rgba(28,26,23,0.24)',
+        brandLiftHover: '0 4px 8px rgba(28,26,23,0.05), 0 32px 60px -24px rgba(28,26,23,0.24)',
         // Coloured lift shadows: the ambient layer carries a faint accent tint so
-        // tinted card variants read as gently glowing rather than flat grey.
-        brandLift: '0 1px 2px rgba(28,26,23,0.04), 0 14px 30px -14px rgba(5,150,105,0.28)',
-        amberLift: '0 1px 2px rgba(28,26,23,0.04), 0 14px 30px -14px rgba(217,174,46,0.30)',
-        tealLift: '0 1px 2px rgba(28,26,23,0.04), 0 14px 30px -14px rgba(43,166,160,0.28)',
-        sageLift: '0 1px 2px rgba(28,26,23,0.04), 0 14px 30px -14px rgba(46,143,103,0.28)',
-        terracottaLift: '0 1px 2px rgba(28,26,23,0.04), 0 14px 30px -14px rgba(181,83,42,0.26)',
+        // tinted card variants read as gently glowing rather than flat grey. All
+        // derived from one formula (hairline + wide tinted ambient) for consistency.
+        brandLift: '0 1px 2px rgba(28,26,23,0.03), 0 18px 40px -20px rgba(5,150,105,0.30)',
+        amberLift: '0 1px 2px rgba(28,26,23,0.03), 0 18px 40px -20px rgba(217,174,46,0.32)',
+        tealLift: '0 1px 2px rgba(28,26,23,0.03), 0 18px 40px -20px rgba(43,166,160,0.30)',
+        sageLift: '0 1px 2px rgba(28,26,23,0.03), 0 18px 40px -20px rgba(46,143,103,0.30)',
+        terracottaLift: '0 1px 2px rgba(28,26,23,0.03), 0 18px 40px -20px rgba(181,83,42,0.28)',
       },
       backgroundImage: {
         'gradient-brand': 'linear-gradient(135deg, #059669 0%, #34D399 50%, #2BA6A0 100%)',
@@ -154,10 +159,20 @@ export default {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        // Shorter, snappier entrance for UI elements (cards, tiles, rows) — a
+        // gentle rise + scale that settles with a soft back-ease overshoot.
+        rise: {
+          '0%': { opacity: '0', transform: 'translateY(10px) scale(0.985)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
       },
       animation: {
+        // Marketing / hero timing (deliberate, cinematic).
         'fade-up': 'fade-up 600ms ease-out both',
         'fade-in': 'fade-in 600ms ease-out both',
+        // App-UI timing (per ui-ux-pro-max 200–300ms guidance).
+        rise: 'rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'fade-in-fast': 'fade-in 240ms ease-out both',
       },
     },
   },

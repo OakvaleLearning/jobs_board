@@ -23,8 +23,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         className={cn(
           'w-full appearance-none rounded-xl border border-ink/12 bg-white px-4 pr-10 h-11 text-ink',
           'shadow-edge',
-          'focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:bg-white',
-          'transition',
+          'hover:border-ink/20 cursor-pointer',
+          'focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:bg-white',
+          'transition duration-200',
           error && 'border-terracotta-500/60 focus:border-terracotta-500',
           className,
         )}

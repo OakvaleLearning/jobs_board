@@ -48,7 +48,7 @@ export function Stat({
   return (
     <div
       className={cn(
-        'rounded-xl border p-4 transition hover:-translate-y-0.5',
+        'rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-brandLiftHover',
         TONE_CLASSES[resolved],
         className,
       )}

@@ -91,3 +91,21 @@ export const verifyEmailSchema = z.object({
 });
 
 export const resendVerificationSchema = z.object({ email: emailSchema });
+
+/**
+ * Self-serve account edits available to every authenticated role. Email is
+ * deliberately excluded — changing it would require re-verification, which is
+ * out of scope here. Both fields are optional so a caller can patch either.
+ */
+export const updateAccountSchema = z.object({
+  fullName: z.string().trim().min(2).max(120).optional(),
+  phone: z.string().trim().max(40).nullable().optional(),
+});
+export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;
+
+/** In-app password change — requires the current password for confirmation. */
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: passwordSchema,
+});
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

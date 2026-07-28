@@ -401,10 +401,10 @@ function ChoiceCard({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        'relative rounded-xl border px-3 py-3 pr-9 text-left transition',
+        'relative rounded-xl border px-3 py-3 pr-9 text-left transition-all duration-200',
         active
-          ? 'border-primary-500 bg-white ring-2 ring-primary-500 shadow-card'
-          : 'border-ink/10 bg-white/50 hover:border-ink/20 hover:bg-cream-50/60',
+          ? 'border-primary-500 bg-brand-50/60 ring-2 ring-primary-500/70 shadow-brandLift -translate-y-px'
+          : 'border-ink/10 bg-white/50 hover:border-brand-500/40 hover:bg-cream-50/60 hover:-translate-y-px hover:shadow-sm',
       )}
     >
       <span

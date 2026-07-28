@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
+  changePasswordSchema,
   loginSchema,
   registerSchema,
   resetSchema,
+  updateAccountSchema,
   verifyEmailSchema,
 } from '@oakvale/shared/schema/auth.js';
 
@@ -87,5 +89,26 @@ describe('auth/schemas', () => {
     const token = 'a'.repeat(64);
     expect(verifyEmailSchema.parse({ token }).token).toBe(token);
     expect(() => verifyEmailSchema.parse({ token: 'short' })).toThrow();
+  });
+
+  it('accepts partial account edits and trims/normalises input', () => {
+    expect(updateAccountSchema.parse({ fullName: '  Ada Lovelace  ' }).fullName).toBe('Ada Lovelace');
+    expect(updateAccountSchema.parse({ phone: '+2348012345678' }).phone).toBe('+2348012345678');
+    // Both fields optional — an empty patch is valid.
+    expect(updateAccountSchema.parse({})).toEqual({});
+    // Phone may be explicitly cleared.
+    expect(updateAccountSchema.parse({ phone: null }).phone).toBeNull();
+  });
+
+  it('rejects a too-short full name on account edit', () => {
+    expect(() => updateAccountSchema.parse({ fullName: 'A' })).toThrow();
+  });
+
+  it('requires a current password and a strong new password on change', () => {
+    expect(
+      changePasswordSchema.parse({ currentPassword: 'old', newPassword: 'a-very-strong-pw-1' }),
+    ).toEqual({ currentPassword: 'old', newPassword: 'a-very-strong-pw-1' });
+    expect(() => changePasswordSchema.parse({ currentPassword: '', newPassword: 'a-very-strong-pw-1' })).toThrow();
+    expect(() => changePasswordSchema.parse({ currentPassword: 'old', newPassword: 'short' })).toThrow();
   });
 });

@@ -56,7 +56,7 @@ export function CorporateOverview() {
         }
       />
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="stagger grid md:grid-cols-2 lg:grid-cols-4 gap-5">
         <Kpi label="Open job postings" value={String(openJobs)} sub="open to candidates" />
         <Kpi label="Staff sized for" value={String(needs?.numStaffRequired ?? 0)} sub="from workforce assessment" />
         <Kpi label="Hours of operation" value={needs?.hoursOfOperation ?? '—'} sub="" />

@@ -150,3 +150,21 @@ export async function getAgentDetail(agentId: string) {
     .orderBy(desc(agentAssignments.assignedAt));
   return { ...row, assignments };
 }
+
+/**
+ * Self-serve profile fetch for staff. Unlike getAgentOrThrow this tolerates a
+ * missing agent_profiles row: pure ADMIN users are seeded straight into `users`
+ * with no profile, so `profile` comes back null for them.
+ */
+export async function getSelf(userId: string): Promise<{ user: User; profile: AgentProfile | null }> {
+  const rows = await db
+    .select({ user: users, profile: agentProfiles })
+    .from(users)
+    .leftJoin(agentProfiles, eq(agentProfiles.id, users.id))
+    .where(eq(users.id, userId))
+    .limit(1);
+  if (!rows[0]) {
+    throw new AppError({ code: 'USER_NOT_FOUND', message: 'User not found.', statusCode: 404 });
+  }
+  return rows[0];
+}

@@ -34,7 +34,7 @@ export function Toaster() {
         <div
           key={t.id}
           className={cn(
-            'animate-fade-up rounded-2xl px-4 py-3 shadow-card',
+            'animate-rise rounded-2xl px-4 py-3 shadow-lg',
             'flex items-start gap-3',
             toneCard[t.tone],
           )}

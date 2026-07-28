@@ -142,7 +142,7 @@ export function DashboardShell({
 
   return (
     <div className="min-h-screen grid md:grid-cols-[260px_1fr]">
-      <aside className="hidden md:flex flex-col gap-8 border-r border-ink/8 p-6 bg-white">
+      <aside className="hidden md:flex flex-col gap-8 border-r border-ink/8 p-6 bg-white/80 backdrop-blur-xl md:sticky md:top-0 md:h-screen md:overflow-y-auto no-scrollbar">
         <div className="flex items-center justify-between">
           <Lockup size="md" />
           <InboxBell inboxHref={inboxHref} />
@@ -192,10 +192,10 @@ export function DashboardShell({
                                 : undefined
                             }
                             className={cn(
-                              'flex items-center justify-between rounded-xl px-3 py-2 text-sm transition',
+                              'flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-all duration-200',
                               group.heading && 'pl-9',
                               active
-                                ? 'bg-brand-500 text-white font-medium shadow-card'
+                                ? 'bg-brand-500 text-white font-medium shadow-brandLift'
                                 : 'text-ink-600 hover:bg-brand-50 hover:text-brand-700',
                               item.locked && 'opacity-60 cursor-not-allowed',
                             )}
@@ -256,7 +256,7 @@ export function DashboardShell({
       </aside>
 
       <div>
-        <div className="md:hidden border-b border-ink/8 px-6 h-14 flex items-center justify-between">
+        <div className="md:hidden sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-ink/8 px-6 h-14 flex items-center justify-between">
           <Lockup size="sm" />
           <div className="flex items-center gap-2">
             <Badge tone="neutral">{surface}</Badge>

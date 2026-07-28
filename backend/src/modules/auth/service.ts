@@ -307,6 +307,58 @@ export function createAuthService(deps: AuthDeps) {
     await db.update(users).set({ passwordHash }).where(eq(users.email, email));
   }
 
+  /** Fetch the current user's account record (for GET /auth/me). */
+  async function getAccount(userId: string): Promise<User> {
+    const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+    if (!user) throw new AppError({ code: 'USER_NOT_FOUND', message: 'User not found.', statusCode: 404 });
+    return user;
+  }
+
+  /**
+   * Self-serve account edit (fullName / phone). Returns the fresh user row so the
+   * caller can echo it back to the client and refresh their session state.
+   */
+  async function updateAccount(
+    userId: string,
+    patch: { fullName?: string; phone?: string | null },
+  ): Promise<User> {
+    const set: Partial<Pick<User, 'fullName' | 'phone'>> = {};
+    if (patch.fullName !== undefined) set.fullName = patch.fullName;
+    if (patch.phone !== undefined) set.phone = patch.phone;
+    if (Object.keys(set).length === 0) {
+      const current = await db.query.users.findFirst({ where: eq(users.id, userId) });
+      if (!current) throw new AppError({ code: 'USER_NOT_FOUND', message: 'User not found.', statusCode: 404 });
+      return current;
+    }
+    const [updated] = await db.update(users).set(set).where(eq(users.id, userId)).returning();
+    if (!updated) throw new AppError({ code: 'USER_NOT_FOUND', message: 'User not found.', statusCode: 404 });
+    return updated;
+  }
+
+  /**
+   * In-app password change. Verifies the current password, then rotates the hash
+   * and revokes all sessions so other devices are logged out.
+   */
+  async function changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+    if (!user) throw new AppError({ code: 'USER_NOT_FOUND', message: 'User not found.', statusCode: 404 });
+    const ok = await argonVerify(user.passwordHash, currentPassword);
+    if (!ok) {
+      throw new AppError({
+        code: 'INVALID_CREDENTIALS',
+        message: 'Your current password is incorrect.',
+        statusCode: 400,
+      });
+    }
+    const passwordHash = await argonHash(newPassword);
+    await db.update(users).set({ passwordHash }).where(eq(users.id, userId));
+    await revokeAllSessions(userId);
+  }
+
   return {
     register,
     verifyEmailByToken,
@@ -316,6 +368,9 @@ export function createAuthService(deps: AuthDeps) {
     logout,
     forgotPassword,
     resetPassword,
+    getAccount,
+    updateAccount,
+    changePassword,
   };
 }
 

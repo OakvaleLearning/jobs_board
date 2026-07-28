@@ -7,6 +7,7 @@ import {
   createAssignmentSchema,
   employerRosterFiltersSchema,
   updateAgentSchema,
+  updateAgentSelfSchema,
   workerRosterFiltersSchema,
 } from '@oakvale/shared/schema/admin.js';
 import { PLACEMENT_STATUSES } from '@oakvale/shared/enums/placement.js';
@@ -78,6 +79,24 @@ export const adminRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     const { key } = z.object({ key: z.string() }).parse(req.params);
     await navCountsService.markNavSeen(requireUserId(req), key);
     return { data: { ok: true } };
+  });
+
+  /* Self-serve staff profile — an ADMIN or AGENT viewing/editing their own record. */
+  app.get('/me', { preHandler: app.requireRole('ADMIN', 'AGENT') }, async (req) => {
+    const self = await agentsService.getSelf(requireUserId(req));
+    return { data: self };
+  });
+
+  app.patch('/me', { preHandler: app.requireRole('ADMIN', 'AGENT') }, async (req) => {
+    const userId = requireUserId(req);
+    const patch = updateAgentSelfSchema.parse(req.body);
+    const self = await agentsService.getSelf(userId);
+    // Pure admins have no agent_profiles row; their editable fields (name/phone/
+    // password) go through /auth/me, so there's nothing to update here.
+    if (self.profile) {
+      await agentsService.updateAgent(userId, patch, userId);
+    }
+    return { data: await agentsService.getSelf(userId) };
   });
 
   /* Agents */

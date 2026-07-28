@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Settings,
   Sparkles,
+  UserCog,
   UserPlus,
   Users,
 } from 'lucide-react';
@@ -54,6 +55,7 @@ export function buildEmployerNav(
   nav.push(
     { href: '/employer/billing', label: 'Billing', icon: CreditCard },
     { href: '/employer/notifications', label: 'Inbox', icon: Inbox },
+    { href: '/employer/profile', label: 'My profile', icon: UserCog },
     { href: '/employer/settings/notifications', label: 'Settings', icon: Settings },
   );
   return nav;

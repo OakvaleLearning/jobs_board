@@ -11,13 +11,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-brand-500 text-white hover:bg-brand-600 focus-visible:ring-brand-500/40 disabled:bg-brand-500/40 shadow-card active:scale-[0.98]',
+    'bg-brand-500 text-white shadow-brandLift hover:bg-brand-600 hover:shadow-brandLiftHover hover:-translate-y-px focus-visible:ring-brand-500/40 disabled:bg-brand-500/40 disabled:shadow-none disabled:translate-y-0 active:translate-y-0 active:scale-[0.98]',
   secondary:
-    'bg-terracotta-500 text-cream-50 hover:bg-terracotta-600 focus-visible:ring-terracotta-500/40 disabled:bg-terracotta-500/40 active:scale-[0.98]',
+    'bg-terracotta-500 text-cream-50 shadow-terracottaLift hover:bg-terracotta-600 hover:-translate-y-px focus-visible:ring-terracotta-500/40 disabled:bg-terracotta-500/40 disabled:shadow-none disabled:translate-y-0 active:translate-y-0 active:scale-[0.98]',
   outline:
-    'border border-ink/12 bg-white text-ink hover:border-brand-500/40 hover:bg-cream-50 focus-visible:ring-brand-500/20 active:scale-[0.98]',
+    'border border-ink/12 bg-white text-ink shadow-sm hover:border-brand-500/40 hover:bg-cream-50 hover:shadow-card focus-visible:ring-brand-500/20 active:scale-[0.98]',
   ghost:
-    'text-ink hover:bg-ink/5 focus-visible:ring-ink/20',
+    'text-ink hover:bg-ink/5 focus-visible:ring-ink/20 active:scale-[0.98]',
 };
 
 const sizes: Record<Size, string> = {

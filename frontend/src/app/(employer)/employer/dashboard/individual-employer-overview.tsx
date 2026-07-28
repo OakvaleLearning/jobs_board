@@ -39,7 +39,7 @@ export function IndividualEmployerOverview() {
         }
       />
 
-      <div className="grid lg:grid-cols-3 gap-5">
+      <div className="stagger grid lg:grid-cols-3 gap-5">
         <Card className="lg:col-span-2">
           <CardEyebrow>Care recipient</CardEyebrow>
           <CardTitle>{needs?.careRecipientName ?? 'Not added yet'}</CardTitle>

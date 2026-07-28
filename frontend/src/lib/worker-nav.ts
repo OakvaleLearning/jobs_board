@@ -11,6 +11,7 @@ import {
   Sparkles,
   TriangleAlert,
   UserCircle,
+  UserCog,
 } from 'lucide-react';
 import type { NavItem } from '@/components/dashboard/Shell';
 
@@ -26,4 +27,5 @@ export const WORKER_NAV: NavItem[] = [
   { href: '/worker/placements', label: 'Placements', icon: FileText },
   { href: '/worker/messages', label: 'Messages', icon: MessageSquare },
   { href: '/worker/complaints', label: 'Complaints', icon: TriangleAlert },
+  { href: '/worker/account', label: 'Account', icon: UserCog },
 ];

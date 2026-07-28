@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "workspaces": ["backend", "frontend", "packages/*"],
   "scripts": {
-    "dev": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml --env-file .env up",
+    "dev": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml --env-file .env up --build",
     "down": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.dev.yml --env-file .env down",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",

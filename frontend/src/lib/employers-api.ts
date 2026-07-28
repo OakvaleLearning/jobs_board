@@ -3,6 +3,7 @@
 import { api } from './api-client';
 import type {
   ContactCreateInput,
+  ContactUpdateInput,
   CorporateNeedsAssessmentInput,
   IndividualEmployerNeedsAssessmentInput,
   EmployerProfileUpdate,
@@ -182,6 +183,14 @@ export const employersApi = {
     api
       .post<{ data: EmployerContact }>('/employers/me/contacts', input as Record<string, unknown>)
       .then((r) => r.data),
+  updateContact: (id: string, input: ContactUpdateInput) =>
+    api
+      .patch<{ data: EmployerContact }>(
+        `/employers/me/contacts/${id}`,
+        input as Record<string, unknown>,
+      )
+      .then((r) => r.data),
+  deleteContact: (id: string) => api.del(`/employers/me/contacts/${id}`),
   upsertIndividualEmployerNeeds: (input: IndividualEmployerNeedsAssessmentInput) =>
     api.put('/employers/me/needs-assessment', input as Record<string, unknown>),
   upsertCorporateNeeds: (input: CorporateNeedsAssessmentInput) =>

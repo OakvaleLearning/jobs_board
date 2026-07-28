@@ -11,12 +11,14 @@ export interface AuthUser {
   id: string;
   email: string;
   fullName: string;
+  phone?: string | null;
   role: Role;
 }
 
 interface AuthState {
   user: AuthUser | null;
   setSession: (input: { user: AuthUser; accessToken: string; refreshToken: string }) => void;
+  updateUser: (patch: Partial<AuthUser>) => void;
   clear: () => void;
 }
 
@@ -31,6 +33,8 @@ export const useAuth = create<AuthState>()(
         }
         set({ user });
       },
+      updateUser: (patch) =>
+        set((s) => (s.user ? { user: { ...s.user, ...patch } } : s)),
       clear: () => {
         setTokens(null);
         if (typeof document !== 'undefined') {

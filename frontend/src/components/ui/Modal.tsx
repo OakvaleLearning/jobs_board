@@ -65,8 +65,8 @@ export function Modal({
         ref={panelRef}
         tabIndex={-1}
         className={cn(
-          'relative z-10 my-auto w-full rounded-3xl border border-ink/8 bg-white shadow-card',
-          'max-h-[90vh] flex flex-col outline-none animate-fade-up',
+          'relative z-10 my-auto w-full rounded-3xl border border-ink/8 bg-white shadow-lg',
+          'max-h-[90vh] flex flex-col outline-none animate-rise',
           SIZE_CLASSES[size],
         )}
       >

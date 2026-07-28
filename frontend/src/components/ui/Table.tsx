@@ -27,7 +27,7 @@ export function Table({
   ...props
 }: TableHTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="overflow-hidden rounded-xl border border-ink/8">
+    <div className="overflow-hidden rounded-2xl border border-ink/8 bg-white shadow-card">
       <table className={cn('w-full text-sm', className)} {...props}>
         {children}
       </table>

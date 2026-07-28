@@ -103,7 +103,7 @@ export function DashboardOverview() {
         </div>
       ) : null}
 
-      <div className="grid lg:grid-cols-3 gap-5">
+      <div className="stagger grid lg:grid-cols-3 gap-5">
         <Card className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <CardEyebrow>Profile completion</CardEyebrow>
