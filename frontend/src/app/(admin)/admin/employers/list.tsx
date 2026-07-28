@@ -43,7 +43,7 @@ export function AdminEmployersRoster() {
       <PageHeader
         eyebrow="Admin · employers"
         title="Employers roster"
-        description="Both pipelines side by side. Watch corporate rows missing NDPA consent — they cannot legally see worker data until that flips."
+        description="Both pipelines side by side. Watch corporate rows missing NDPA consent. They cannot legally see worker data until that flips."
       />
 
       <Card>

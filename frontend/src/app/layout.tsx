@@ -14,7 +14,7 @@ const display = Fraunces({
 const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Oakvale — jobs portal',
+  title: 'Oakvale jobs portal',
   description:
     'A credentialed care marketplace. CPD-accredited Nigerian workers, verified and placed with proof.',
 };

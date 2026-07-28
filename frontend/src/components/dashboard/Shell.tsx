@@ -188,7 +188,7 @@ export function DashboardShell({
                             aria-disabled={item.locked}
                             title={
                               item.locked
-                                ? 'Requires admin validation — unlocks once an Oakvale agent approves your account.'
+                                ? 'Requires admin validation. Unlocks once an Oakvale agent approves your account.'
                                 : undefined
                             }
                             className={cn(

@@ -77,7 +77,7 @@ export function PreferencesGrid() {
       <CardEyebrow>Notification preferences</CardEyebrow>
       <CardTitle>Choose what we send you, and where.</CardTitle>
       <p className="mt-3 max-w-xl text-sm text-ink-600">
-        Safety, legal, and admin escalations cannot be disabled — they’ll always reach you in the appropriate channel.
+        Safety, legal, and admin escalations cannot be disabled. They’ll always reach you in the appropriate channel.
       </p>
 
       <div className="mt-6 space-y-6">
@@ -141,7 +141,7 @@ function PreferenceSection({
                     <span
                       key={channel}
                       className="inline-flex items-center gap-1.5 text-xs text-muted"
-                      title="Required — cannot be disabled"
+                      title="Required, cannot be disabled"
                     >
                       <meta.icon className="h-3.5 w-3.5" />
                       <Lock className="h-3 w-3" />

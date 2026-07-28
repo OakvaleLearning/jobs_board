@@ -77,7 +77,7 @@ export function VerificationView() {
           <CardEyebrow>Visibility gate</CardEyebrow>
           <CardTitle>{c.data?.visibleToEmployers ? 'You’re visible.' : 'Not yet visible.'}</CardTitle>
           <p className="text-sm text-ink-600 mt-3">
-            These must be true: identity verified, Oakvale CPD certification active, profile complete — and
+            These must be true: identity verified, Oakvale CPD certification active, profile complete, and
             no active safeguarding flag. Your background check is advisory and does not block visibility.
           </p>
           <ul className="mt-5 space-y-2 text-sm">

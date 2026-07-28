@@ -213,8 +213,8 @@ export function JobPostingForm({ onCreated, onCancel }: { onCreated: () => void;
             value: x,
             label:
               x === 'PUBLIC'
-                ? 'Public — searchable by all workers'
-                : 'Restricted — notify matched workers',
+                ? 'Public: searchable by all workers'
+                : 'Restricted: notify matched workers',
           }))}
         />
       </Field>
@@ -307,7 +307,7 @@ export function JobPostingForm({ onCreated, onCancel }: { onCreated: () => void;
         <Field
           label="Care specialisations"
           required={false}
-          hint="Tick the care tasks this role involves — caregivers see these when applying."
+          hint="Tick the care tasks this role involves. Caregivers see these when applying."
         >
           <SpecialisationPicker
             value={v.specialisations ?? []}

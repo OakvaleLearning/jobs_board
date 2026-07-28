@@ -59,7 +59,7 @@ export function AddCertForm({ onDone }: { onDone: () => void }) {
         <DocumentUpload
           category="CPD_CERT"
           label="Certificate document"
-          description="PDF, JPG, or PNG. Upload the certificate — this is what we verify."
+          description="PDF, JPG, or PNG. Upload the certificate. This is what we verify."
           documentId={watch('certificateDocumentId') ?? null}
           onUploaded={(doc) => setValue('certificateDocumentId', doc.id, { shouldDirty: true })}
           onDeleted={() => setValue('certificateDocumentId', '', { shouldDirty: true })}

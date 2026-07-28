@@ -50,7 +50,7 @@ export function CertificationsView() {
       <PageHeader
         eyebrow="Admin · compliance"
         title="Certificate cross-check."
-        description="Every certificate submission with the worker's contact details, so you can reconcile against Oakvale's certified-student list in bulk — then export to CSV."
+        description="Every certificate submission with the worker's contact details, so you can reconcile against Oakvale's certified-student list in bulk, then export to CSV."
         actions={
           <Button onClick={onExport} disabled={downloading || rows.length === 0}>
             <Download className="h-4 w-4" />

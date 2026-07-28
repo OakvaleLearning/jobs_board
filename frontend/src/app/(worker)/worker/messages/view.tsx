@@ -33,7 +33,7 @@ export function WorkerMessages() {
       <PageHeader
         eyebrow="Worker · messages"
         title="Your conversations."
-        description="All contact with employers happens here. Messages that contain phone numbers, emails or social handles are blocked until a contract is signed — that keeps everyone protected."
+        description="All contact with employers happens here. Messages that contain phone numbers, emails or social handles are blocked until a contract is signed. That keeps everyone protected."
       />
 
       {conversations.isLoading ? (
@@ -105,8 +105,8 @@ function Thread({ conversation }: { conversation: ConversationRow }) {
     onError: (e) => {
       if (e instanceof ApiError && e.code === 'CONTACT_DETAILS_BLOCKED') {
         // Draft is kept so the worker can edit and resend.
-        setBlockedHint('Message not sent — please remove phone numbers, emails or social handles.');
-        toast.error('Message not sent — remove contact details and try again.');
+        setBlockedHint('Message not sent. Please remove phone numbers, emails or social handles.');
+        toast.error('Message not sent. Remove contact details and try again.');
         return;
       }
       setBlockedHint(null);
@@ -128,7 +128,7 @@ function Thread({ conversation }: { conversation: ConversationRow }) {
           <Bubble key={m.id} message={m} mine={m.senderUserId === me} />
         ))}
         {(messages.data ?? []).length === 0 ? (
-          <p className="text-sm text-muted text-center py-8">No messages yet — say hello.</p>
+          <p className="text-sm text-muted text-center py-8">No messages yet. Say hello.</p>
         ) : null}
         <div ref={bottomRef} />
       </div>

@@ -86,7 +86,7 @@ export function IndividualEmployerOverview() {
           <CardEyebrow>Guarantee</CardEyebrow>
           <CardTitle>90-day replacement</CardTitle>
           <p className="text-sm text-ink-600 mt-3">
-            If the placement isn&rsquo;t working out within 90 days, we replace at no additional fee — 5
+            If the placement isn&rsquo;t working out within 90 days, we replace at no additional fee, on a 5
             business-day SLA.
           </p>
         </Card>

@@ -310,7 +310,7 @@ function CategoryForm({
       </div>
 
       <div className="mt-6 space-y-5">
-        <Field label="Required Oakvale certification(s) — checked against worker records">
+        <Field label="Required Oakvale certification(s), checked against worker records">
           <CertificationsEditor value={requiredCertifications} onChange={setRequiredCertifications} />
         </Field>
 

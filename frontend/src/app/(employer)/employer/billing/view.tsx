@@ -122,7 +122,7 @@ export function EmployerBillingView() {
                 onClick={() => subscribe.mutate(plan)}
                 disabled={subscribe.isPending}
               >
-                {subscribe.isPending ? 'Opening checkout…' : `Subscribe — ${plan}`}
+                {subscribe.isPending ? 'Opening checkout…' : `Subscribe to ${plan}`}
               </Button>
             </div>
           )}

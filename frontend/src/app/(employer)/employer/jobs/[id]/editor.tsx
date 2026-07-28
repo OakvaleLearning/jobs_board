@@ -148,7 +148,7 @@ export function JobEditor({ id }: { id: string }) {
               label="Type of care needed"
               required
               error={errors.careTypeId?.message}
-              hint="What kind of care this role is for — caregivers use this to find relevant roles."
+              hint="What kind of care this role is for. Caregivers use this to find relevant roles."
             >
               <Select
                 {...register('careTypeId')}
@@ -163,7 +163,7 @@ export function JobEditor({ id }: { id: string }) {
                 {...register('visibility')}
                 options={JOB_VISIBILITY.map((x) => ({
                   value: x,
-                  label: x === 'PUBLIC' ? 'Public — searchable by all workers' : 'Restricted — notify matched workers',
+                  label: x === 'PUBLIC' ? 'Public: searchable by all workers' : 'Restricted: notify matched workers',
                 }))}
               />
             </Field>
@@ -251,7 +251,7 @@ export function JobEditor({ id }: { id: string }) {
               <Field
                 label="Care specialisations"
                 required={false}
-                hint="Tick the care tasks this role involves — caregivers see these when applying."
+                hint="Tick the care tasks this role involves. Caregivers see these when applying."
               >
                 <SpecialisationPicker
                   value={v.specialisations ?? []}

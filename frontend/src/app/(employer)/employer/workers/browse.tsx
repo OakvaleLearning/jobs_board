@@ -54,7 +54,7 @@ export function WorkersBrowse() {
       <PageHeader
         eyebrow="Worker browse"
         title="Credentialed care, on tap."
-        description="Identity-verified, background-checked, Oakvale-certified, and free of active safeguarding flags. No PII shown — credentials only."
+        description="Identity-verified, background-checked, Oakvale-certified, and free of active safeguarding flags. No PII shown, credentials only."
         actions={
           <Badge tone="sage">
             {list.data ? `${list.data.meta.total} workers visible` : 'Loading…'}

@@ -56,7 +56,7 @@ export function SectionE({ initial }: { initial: unknown }) {
     >
       <form onBlur={persist} className="space-y-4">
         {fa.fields.length === 0 ? (
-          <p className="text-sm text-muted">Add at least one role — experience is double-weighted.</p>
+          <p className="text-sm text-muted">Add at least one role. Experience is double-weighted.</p>
         ) : null}
         {fa.fields.map((field, idx) => (
           <div key={field.id} className="rounded-xl border border-ink/8 bg-cream-50 p-5 grid md:grid-cols-2 gap-4">

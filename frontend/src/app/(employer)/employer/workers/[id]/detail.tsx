@@ -39,7 +39,7 @@ export function WorkerDetail({ id }: { id: string }) {
       <PageHeader
         eyebrow="Worker · profile"
         title={detail.data?.personal.fullName ?? 'Worker profile'}
-        description="Public-safe view. We never expose DOB, address, phone, or document numbers — only what you need to evaluate fit."
+        description="Public-safe view. We never expose DOB, address, phone, or document numbers, only what you need to evaluate fit."
       />
 
       {!detail.data ? (
@@ -91,7 +91,7 @@ function DetailBody({ profile, workerId }: { profile: PublicWorkerProfile; worke
                   <span className="text-muted">@ {e.employerName ?? '—'}</span>
                 </p>
                 <p className="text-xs text-muted">
-                  {e.startDate ?? ''} – {e.isCurrent ? 'present' : e.endDate ?? ''}
+                  {e.startDate ?? ''} - {e.isCurrent ? 'present' : e.endDate ?? ''}
                 </p>
                 {e.duties ? <p className="text-sm text-ink-600 mt-1">{e.duties}</p> : null}
               </li>
@@ -199,7 +199,7 @@ function DetailBody({ profile, workerId }: { profile: PublicWorkerProfile; worke
           <Card>
             <CardEyebrow>Salary expectations</CardEyebrow>
             <p className="text-sm text-ink-600 mt-3">
-              {profile.salary.minRate} – {profile.salary.maxRate} {profile.salary.currency} ·{' '}
+              {profile.salary.minRate} - {profile.salary.maxRate} {profile.salary.currency} ·{' '}
               {profile.salary.wageStructure?.toLowerCase()}
               {profile.salary.negotiable ? ' · negotiable' : ''}
             </p>

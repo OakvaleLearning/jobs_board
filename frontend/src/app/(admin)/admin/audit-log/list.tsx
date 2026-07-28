@@ -37,7 +37,7 @@ export function AdminAuditLog() {
       <PageHeader
         eyebrow="Admin · audit"
         title="Audit log"
-        description="Every state change performed by an admin or agent — verification, placements, payments, agents, flags, subscriptions."
+        description="Every state change performed by an admin or agent: verification, placements, payments, agents, flags, subscriptions."
       />
 
       <Card>

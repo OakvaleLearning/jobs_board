@@ -102,7 +102,7 @@ function InterviewCard({ interview }: { interview: InterviewRow }) {
 
       {canRespond ? (
         <div className="mt-5 space-y-3">
-          <p className="text-xs text-muted">Proposed times — accept one:</p>
+          <p className="text-xs text-muted">Proposed times. Accept one:</p>
           <div className="flex flex-wrap gap-2">
             {interview.proposedSlots.map((slot) => (
               <Button
@@ -117,7 +117,7 @@ function InterviewCard({ interview }: { interview: InterviewRow }) {
             ))}
           </div>
           <Button size="sm" variant="ghost" onClick={() => setProposing((v) => !v)} disabled={busy}>
-            {proposing ? 'Cancel' : 'None of these work — propose another time'}
+            {proposing ? 'Cancel' : 'None of these work, propose another time'}
           </Button>
           {proposing ? (
             <div className="rounded-xl border border-ink/8 bg-cream-50 p-4 flex flex-wrap gap-3 items-end">

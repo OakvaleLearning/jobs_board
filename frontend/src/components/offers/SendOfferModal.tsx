@@ -152,7 +152,7 @@ export function SendOfferModal({
               value={schedule}
               maxLength={200}
               onChange={(e) => setSchedule(e.target.value)}
-              placeholder="e.g. Mon–Fri, 8am–5pm"
+              placeholder="e.g. Mon-Fri, 8am-5pm"
             />
           </div>
         </div>

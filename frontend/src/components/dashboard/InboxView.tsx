@@ -305,7 +305,7 @@ function EmptyState({ unreadOnly }: { unreadOnly: boolean }) {
       </p>
       <p className="max-w-xs text-xs text-muted">
         {unreadOnly
-          ? 'You’re all caught up — nothing waiting on you right now.'
+          ? 'You’re all caught up. Nothing waiting on you right now.'
           : 'Placement updates, invoice reminders, and account events will appear here.'}
       </p>
     </div>

@@ -162,7 +162,7 @@ export function DashboardOverview() {
             {identityState === 'VERIFIED' && bgState === 'CLEAR'
               ? 'You are fully verified.'
               : identityState === 'VERIFIED'
-                ? 'Identity approved — your background documents are with our team (advisory).'
+                ? 'Identity approved. Your background documents are with our team (advisory).'
                 : identityState === 'REJECTED'
                   ? 'Your identity submission was rejected. Check verification for notes.'
                   : 'Submit your profile from the editor to start verification.'}

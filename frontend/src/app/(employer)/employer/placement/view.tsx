@@ -154,7 +154,7 @@ function ActivePlacementCard({ placement, onReplacement }: { placement: Placemen
               Welfare flagged {openEscalation.severity}
             </p>
             <p className="text-xs text-terracotta-700 mt-1">
-              Your account manager has 24h to action — due {new Date(openEscalation.dueAt).toLocaleString()}.
+              Your account manager has 24h to action, due {new Date(openEscalation.dueAt).toLocaleString()}.
             </p>
           </div>
         ) : null}

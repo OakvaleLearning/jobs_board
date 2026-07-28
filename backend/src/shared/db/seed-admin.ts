@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import { hash } from '@node-rs/argon2';
 import { db } from './client.js';
 import { users } from './schema.js';
@@ -12,23 +11,31 @@ const fullName = process.env.SEED_ADMIN_FULL_NAME ?? 'Oakvale Admin';
 async function main(): Promise<void> {
   loadEnv();
 
-  const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-  if (existing) {
-    logger.info({ email }, 'Admin user already exists');
-    process.exit(0);
-  }
-
   const passwordHash = await hash(password);
-  await db.insert(users).values({
-    email,
-    passwordHash,
-    fullName,
-    role: 'ADMIN',
-    emailVerifiedAt: new Date(),
-    isActive: true,
-  });
+  await db
+    .insert(users)
+    .values({
+      email,
+      passwordHash,
+      fullName,
+      role: 'ADMIN',
+      emailVerifiedAt: new Date(),
+      isActive: true,
+    })
+    .onConflictDoUpdate({
+      target: users.email,
+      set: {
+        passwordHash,
+        fullName,
+        role: 'ADMIN',
+        emailVerifiedAt: new Date(),
+        isActive: true,
+        deletedAt: null,
+        updatedAt: new Date(),
+      },
+    });
 
-  logger.info({ email }, 'Admin user seeded successfully');
+  logger.info({ email }, 'Admin user upserted successfully');
 }
 
 main().catch((error: unknown) => {

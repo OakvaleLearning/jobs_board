@@ -1,6 +1,6 @@
 import { LegalPage } from '../LegalPage';
 
-export const metadata = { title: 'Privacy Policy — Oakvale' };
+export const metadata = { title: 'Privacy Policy | Oakvale' };
 
 export default function PrivacyPage() {
   return (

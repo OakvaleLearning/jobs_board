@@ -94,7 +94,7 @@ function VerificationBanner({ status, notes }: { status: 'PENDING' | 'REJECTED';
       <p className="text-sm text-ink-600 mt-1">
         {rejected
           ? `An Oakvale agent could not verify your account yet${notes ? `: ${notes}` : '.'} Your account manager will be in touch.`
-          : 'An Oakvale agent is reviewing your registration. Searching and hiring unlock once you’re approved — usually within 2 working days.'}
+          : 'An Oakvale agent is reviewing your registration. Searching and hiring unlock once you’re approved, usually within 2 working days.'}
       </p>
     </div>
   );

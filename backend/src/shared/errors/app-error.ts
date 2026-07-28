@@ -7,6 +7,8 @@ export type ErrorCode =
   | 'NOT_FOUND'
   | 'CONFLICT'
   | 'RATE_LIMITED'
+  | 'CAPTCHA_REQUIRED'
+  | 'CAPTCHA_FAILED'
   | 'INTERNAL_ERROR'
   | 'EMAIL_IN_USE'
   | 'INVALID_CREDENTIALS'

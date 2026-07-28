@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef, useEffect, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
+import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
@@ -17,6 +18,27 @@ import {
   REFERRAL_SOURCE_LABELS,
   type ReferralSource,
 } from '@oakvale/shared/schema/auth';
+
+/** Cloudflare Turnstile site key. Unset → the signup bot check is disabled (dev). */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        el: HTMLElement,
+        opts: {
+          sitekey: string;
+          callback: (token: string) => void;
+          'error-callback'?: () => void;
+          'expired-callback'?: () => void;
+        },
+      ) => string;
+      reset: (id?: string) => void;
+      remove: (id: string) => void;
+    };
+  }
+}
 
 /** A signup choice is either the worker role or a specific configurable employer type. */
 type Choice = { kind: 'WORKER' } | { kind: 'EMPLOYER'; typeId: string; roleKey: string };
@@ -44,6 +66,10 @@ export default function RegisterPage() {
 
   const [choice, setChoice] = useState<Choice>({ kind: 'WORKER' });
   const [done, setDone] = useState(false);
+  // Turnstile bot check: token from the widget + a bump counter to reset it after
+  // a failed submit (tokens are single-use). Both stay null/0 when disabled.
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   // Seed the selection from the marketing ?type= hint exactly once (when types
   // load). After that the user is free to pick any option and it sticks — the
@@ -82,9 +108,10 @@ export default function RegisterPage() {
           ? { referrerName: values.referrerName.trim() }
           : {}),
       };
+      const captcha = captchaToken ? { turnstileToken: captchaToken } : {};
       const body =
         choice.kind === 'WORKER'
-          ? { fullName: values.fullName, email: values.email, password: values.password, role: 'WORKER' as const, ...referral, ...consent }
+          ? { fullName: values.fullName, email: values.email, password: values.password, role: 'WORKER' as const, ...referral, ...consent, ...captcha }
           : {
               fullName: values.fullName,
               email: values.email,
@@ -93,6 +120,7 @@ export default function RegisterPage() {
               employerTypeId: choice.typeId,
               ...referral,
               ...consent,
+              ...captcha,
             };
       await api.post('/auth/register', body);
       toast.success('Account created. Check your email for a verification link.');
@@ -101,6 +129,9 @@ export default function RegisterPage() {
         choice.kind === 'WORKER' ? '/worker/dashboard' : '/employer/onboarding';
       setTimeout(() => router.push(`/login?next=${next}`), 1200);
     } catch (e) {
+      // Turnstile tokens are single-use — force a fresh challenge before retry.
+      setCaptchaToken(null);
+      setCaptchaReset((n) => n + 1);
       toastApiError(e, 'Something went wrong.');
     }
   }
@@ -213,7 +244,7 @@ export default function RegisterPage() {
               error={errors.referrerName?.message}
             />
             <p className="text-[11px] text-muted">
-              A name is fine — we use it to thank the person who sent you our way.
+              A name is fine. We use it to thank the person who sent you our way.
             </p>
           </div>
         ) : null}
@@ -258,7 +289,20 @@ export default function RegisterPage() {
           ) : null}
         </div>
 
-        <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
+        {TURNSTILE_SITE_KEY ? (
+          <TurnstileWidget
+            siteKey={TURNSTILE_SITE_KEY}
+            resetSignal={captchaReset}
+            onToken={setCaptchaToken}
+          />
+        ) : null}
+
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting || (Boolean(TURNSTILE_SITE_KEY) && !captchaToken)}
+          className="w-full"
+        >
           {isSubmitting ? 'Creating…' : 'Create account'}
         </Button>
       </form>
@@ -286,6 +330,59 @@ const Consent = forwardRef<
     </div>
   );
 });
+
+/**
+ * Renders the Cloudflare Turnstile widget via explicit rendering (no extra npm
+ * dep). Loads the API script once, renders into a div, hands the token up, and
+ * re-challenges whenever `resetSignal` changes (after a failed submit).
+ */
+function TurnstileWidget({
+  siteKey,
+  resetSignal,
+  onToken,
+}: {
+  siteKey: string;
+  resetSignal: number;
+  onToken: (token: string | null) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const widgetId = useRef<string | null>(null);
+  const [ready, setReady] = useState(typeof window !== 'undefined' && Boolean(window.turnstile));
+
+  useEffect(() => {
+    if (!ready || !ref.current || !window.turnstile || widgetId.current) return;
+    widgetId.current = window.turnstile.render(ref.current, {
+      sitekey: siteKey,
+      callback: (token) => onToken(token),
+      'error-callback': () => onToken(null),
+      'expired-callback': () => onToken(null),
+    });
+    return () => {
+      if (widgetId.current && window.turnstile) {
+        window.turnstile.remove(widgetId.current);
+        widgetId.current = null;
+      }
+    };
+  }, [ready, siteKey, onToken]);
+
+  // Reset the challenge after a failed submit (single-use tokens).
+  useEffect(() => {
+    if (resetSignal > 0 && widgetId.current && window.turnstile) {
+      window.turnstile.reset(widgetId.current);
+    }
+  }, [resetSignal]);
+
+  return (
+    <>
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="afterInteractive"
+        onReady={() => setReady(true)}
+      />
+      <div ref={ref} />
+    </>
+  );
+}
 
 function ChoiceCard({
   title,

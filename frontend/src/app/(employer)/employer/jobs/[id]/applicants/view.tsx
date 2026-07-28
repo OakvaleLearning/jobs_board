@@ -47,7 +47,7 @@ export function JobApplicants({ jobId }: { jobId: string }) {
     <EmployerShell config={config}>
       <PageHeader
         eyebrow="Corporate · applicants"
-        title={job.data?.title ? `Applicants — ${job.data.title}` : 'Applicants'}
+        title={job.data?.title ? `Applicants: ${job.data.title}` : 'Applicants'}
         actions={
           <Link
             href={`/employer/jobs/${jobId}`}

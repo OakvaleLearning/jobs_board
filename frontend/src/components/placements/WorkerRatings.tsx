@@ -79,7 +79,7 @@ export function RateWorkerForm({
   const submit = useMutation({
     mutationFn: () => placementsApi.rateWorker(placementId, { stars, review: review.trim() || undefined }),
     onSuccess: () => {
-      toast.success('Thanks — your rating has been recorded.');
+      toast.success('Thanks. Your rating has been recorded.');
       queryClient.invalidateQueries({ queryKey: ['employerPlacements'] });
       if (workerId) queryClient.invalidateQueries({ queryKey: ['workerRatings', workerId] });
       onDone?.();

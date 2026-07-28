@@ -65,7 +65,7 @@ export function SectionG({ initial }: { initial: unknown }) {
           label="Workforce category"
           className="md:col-span-2"
           required={false}
-          hint="Your primary Oakvale role — drives your skills menu and what employers can filter you by."
+          hint="Your primary Oakvale role. It drives your skills menu and what employers can filter you by."
         >
           <Select
             {...register('workforceCategoryId')}

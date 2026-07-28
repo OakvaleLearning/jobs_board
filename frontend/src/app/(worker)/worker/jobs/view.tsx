@@ -69,7 +69,7 @@ export function WorkerJobs() {
           <CardEyebrow>No open roles</CardEyebrow>
           <CardTitle>Nothing matches right now.</CardTitle>
           <p className="text-sm text-ink-600 mt-3">
-            Check back soon — new roles are posted as employers and our agents approve them.
+            Check back soon. New roles are posted as employers and our agents approve them.
           </p>
         </Card>
       ) : (

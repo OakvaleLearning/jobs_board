@@ -201,7 +201,7 @@ function CaseDetail({ id }: { id: string }) {
           <li key={e.id} className="flex items-baseline justify-between gap-4 text-ink-600">
             <span>
               {e.kind.replace(/_/g, ' ').toLowerCase()}
-              {e.notes ? ` — ${e.notes}` : ''}
+              {e.notes ? `: ${e.notes}` : ''}
             </span>
             <span className="text-xs text-muted shrink-0">{new Date(e.occurredAt).toLocaleString()}</span>
           </li>

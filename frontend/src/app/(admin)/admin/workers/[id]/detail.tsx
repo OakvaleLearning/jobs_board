@@ -164,7 +164,7 @@ export function AdminWorkerDetail({ workerId }: { workerId: string }) {
                       {e.jobTitle ?? '—'} <span className="text-muted">@ {e.employerName ?? '—'}</span>
                     </p>
                     <p className="text-xs text-muted">
-                      {e.startDate ?? ''} – {e.isCurrent ? 'present' : e.endDate ?? ''}
+                      {e.startDate ?? ''} - {e.isCurrent ? 'present' : e.endDate ?? ''}
                     </p>
                     {e.duties ? <p className="text-sm text-ink-600 mt-1">{e.duties}</p> : null}
                   </li>

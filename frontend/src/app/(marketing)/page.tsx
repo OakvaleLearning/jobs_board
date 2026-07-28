@@ -65,7 +65,7 @@ export default function LandingPage() {
           <PipelineCard
             eyebrow="Nigerian corporates & institutions"
             title="Build your workplace crèche with confidence."
-            body="Certified childcare workers trained in early-years development, child safeguarding, infant care and SEND awareness. Search, shortlist and hire with self-service job posting — or partner annually with a dedicated employer portal and a training-to-hire pathway via Oakvale's LMS."
+            body="Certified childcare workers trained in early-years development, child safeguarding, infant care and SEND awareness. Search, shortlist and hire with self-service job posting, or partner annually with a dedicated employer portal and a training-to-hire pathway via Oakvale's LMS."
             cta="Explore corporate partnership"
             href="/register?type=CORPORATE"
             chips={['Certified childcare workers', 'Self-service job posting', 'Training-to-hire pathway']}

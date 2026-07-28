@@ -1,12 +1,12 @@
 import { LegalPage } from '../LegalPage';
 
-export const metadata = { title: 'Background Check Consent — Oakvale' };
+export const metadata = { title: 'Background Check Consent | Oakvale' };
 
 export default function BackgroundCheckPage() {
   return (
     <LegalPage title="Background Check Consent">
       <p>
-        As part of credentialing, Oakvale reviews background documents you upload — a police character
+        As part of credentialing, Oakvale reviews background documents you upload: a police character
         certificate (certificate of good conduct), a guarantor/attestation letter, and a sworn affidavit
         of good conduct. By consenting, you confirm these documents are genuine and authorise Oakvale to
         review them to confirm your suitability for care and childcare placements.

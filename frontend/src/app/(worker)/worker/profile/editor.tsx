@@ -106,7 +106,7 @@ export function ProfileEditor() {
       <PageHeader
         eyebrow="Worker · profile"
         title="Your credentialed profile."
-        description="Save as you go. Submit for review at 80% or above — our agents take it from there."
+        description="Save as you go. Submit for review at 80% or above. Our agents take it from there."
         actions={<ProfilePhoto />}
       />
 
@@ -177,7 +177,7 @@ function LockedSection({
       <p className="text-eyebrow text-muted">Verified detail · locked</p>
       <p className="h-display text-xl text-ink">{title} is locked.</p>
       <p className="text-sm text-ink-600 max-w-md mx-auto">
-        This section was verified by our team. Editing it requires revalidation — while we re-review
+        This section was verified by our team. Editing it requires revalidation. While we re-review
         your changes, your profile will be hidden from employers.
       </p>
       <Button size="sm" variant="outline" type="button" onClick={onRequest} disabled={pending}>

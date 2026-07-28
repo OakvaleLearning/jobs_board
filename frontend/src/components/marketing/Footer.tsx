@@ -7,7 +7,7 @@ export function Footer() {
         <div className="space-y-4">
           <Lockup size="md" href="" />
           <p className="text-sm text-muted max-w-sm">
-            A credentialed care marketplace. Trust, accountability, and placement quality —
+            A credentialed care marketplace. Trust, accountability, and placement quality,
             engineered into every step.
           </p>
         </div>

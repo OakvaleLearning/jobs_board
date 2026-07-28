@@ -150,7 +150,7 @@ export function ReviewWorker({ workerId }: { workerId: string }) {
                 {pendingChanges.data?.editRequestedAt
                   ? ` on ${new Date(pendingChanges.data.editRequestedAt).toLocaleString()}`
                   : ''}
-                . Review the changes — re-approving runs revalidation (a fresh background check).
+                . Review the changes. Re-approving runs revalidation (a fresh background check).
               </p>
               <div className="mt-3 divide-y divide-ink/8 rounded-xl border border-ink/8 bg-cream-50">
                 {pendingChanges.data?.changes.map((c) => (
@@ -265,7 +265,7 @@ export function ReviewWorker({ workerId }: { workerId: string }) {
         <CardEyebrow>Background documents (advisory)</CardEyebrow>
         <CardTitle>Police, guarantor &amp; affidavit</CardTitle>
         <p className="text-sm text-muted mt-2">
-          Review the uploaded documents and mark the background Clear or Flagged. This is advisory — it
+          Review the uploaded documents and mark the background Clear or Flagged. This is advisory. It
           updates the badge but does not change whether the worker is visible to employers.
         </p>
         <div className="grid md:grid-cols-3 gap-3 mt-5">

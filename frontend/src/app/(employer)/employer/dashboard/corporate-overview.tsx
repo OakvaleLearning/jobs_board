@@ -46,7 +46,7 @@ export function CorporateOverview() {
       <PageHeader
         eyebrow="Corporate crèche"
         title="A workforce that&rsquo;s already trained."
-        description="Manage NDPA consent, job postings, and worker browse — all under a credentialed marketplace."
+        description="Manage NDPA consent, job postings, and worker browse, all under a credentialed marketplace."
         actions={
           profile.data?.ndpaConsentGiven ? (
             <Badge tone="sage">NDPA consent on file</Badge>

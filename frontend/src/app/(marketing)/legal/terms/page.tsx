@@ -1,6 +1,6 @@
 import { LegalPage } from '../LegalPage';
 
-export const metadata = { title: 'Terms of Service — Oakvale' };
+export const metadata = { title: 'Terms of Service | Oakvale' };
 
 export default function TermsPage() {
   return (
@@ -13,7 +13,7 @@ export default function TermsPage() {
       <p>
         Workers must hold or be pursuing a valid Oakvale certification. Employers agree to the service,
         payment, and replacement terms set out in their service agreement. Oakvale mediates all
-        worker–employer contact until a contract is signed.
+        worker-employer contact until a contract is signed.
       </p>
     </LegalPage>
   );

@@ -48,7 +48,7 @@ export function SectionC({ initial }: { initial: unknown }) {
     <SectionFrame
       letter="C"
       title="Background check"
-      description="Consent, then upload your background documents — our team reviews them by hand."
+      description="Consent, then upload your background documents. Our team reviews them by hand."
       status={status}
     >
       <div className="space-y-6 max-w-2xl">

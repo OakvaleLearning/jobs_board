@@ -43,8 +43,8 @@ export function DocumentsStep({ profile, onNext }: { profile: EmployerProfile; o
       )}
       <p className="text-sm text-ink-600">
         {isFamily
-          ? 'Optionally upload your ID and proof of residence now — or skip and add them later from your dashboard. An Oakvale agent will follow up before your account is verified.'
-          : 'Upload the documents below. An Oakvale agent reviews them before approving your account — you can finish onboarding now and we’ll email you once you’re verified.'}
+          ? 'Optionally upload your ID and proof of residence now, or skip and add them later from your dashboard. An Oakvale agent will follow up before your account is verified.'
+          : 'Upload the documents below. An Oakvale agent reviews them before approving your account. You can finish onboarding now and we’ll email you once you’re verified.'}
       </p>
       <div className="space-y-4">
         {slots.map((s) => (

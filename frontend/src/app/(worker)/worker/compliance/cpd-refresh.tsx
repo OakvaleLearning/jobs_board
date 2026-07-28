@@ -41,7 +41,7 @@ export function CpdRefreshPanel() {
   const complete = useMutation({
     mutationFn: (id: string) => complianceApi.completeCpdEnrolment(id),
     onSuccess: () => {
-      toast.success('Marked complete — a CPD record has been added.');
+      toast.success('Marked complete. A CPD record has been added.');
       invalidate();
     },
     onError: (e) => toastApiError(e, 'Could not complete.'),

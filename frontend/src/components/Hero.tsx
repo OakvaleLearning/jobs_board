@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="absolute inset-0 -z-20 bg-[url('/landing-hero.png')] bg-cover bg-center bg-no-repeat" />
       <div className="absolute inset-0 -z-[15] bg-black/60" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-900/95 via-brand-700/85 to-amber-700/45" />
-      <div className="mx-auto max-w-5xl px-6 pt-24 md:pt-32 pb-24 text-center">
+      <div className="mx-auto max-w-5xl px-6 pt-24 md:pt-32 pb-24 text-left">
         <Badge tone="amber" className="uppercase tracking-widish animate-fade-in">
           <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
           Nigeria&rsquo;s first credentialed care-work marketplace
@@ -31,13 +31,13 @@ const Hero = () => {
           <span className="block italic text-amber-300">Trusted care workers.</span>
         </h1>
 
-        <p className="mx-auto mt-7 max-w-2xl text-lg md:text-xl text-white/90 leading-relaxed animate-fade-in [animation-delay:200ms]">
+        <p className="mt-7 max-w-2xl text-lg md:text-xl text-white/90 leading-relaxed animate-fade-in [animation-delay:200ms]">
           Oakvale connects Nigerian corporates and diaspora families with certified,
           background-checked caregivers &mdash; and gives care workers a credentialed
           profile that gets them hired. Every placement checked, certified, and accountable.
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 animate-fade-in [animation-delay:300ms]">
+        <div className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 animate-fade-in [animation-delay:300ms]">
           <Link href="/register?role=WORKER" className="sm:w-auto">
             <Button size="lg" className="w-full bg-amber-400 text-ink hover:bg-amber-300">
               Find care work
@@ -50,7 +50,7 @@ const Hero = () => {
           </Link>
         </div>
 
-        <dl className="mx-auto mt-16 flex max-w-2xl items-stretch justify-center divide-x divide-white/15 animate-fade-up [animation-delay:400ms]">
+        <dl className="mt-16 flex max-w-2xl items-stretch justify-start divide-x divide-white/15 animate-fade-up [animation-delay:400ms]">
           {stats.map(({ value, label }) => (
             <div key={label} className="flex-1 px-4 md:px-8">
               <dd className="h-display text-3xl md:text-4xl text-white tabular-nums">{value}</dd>

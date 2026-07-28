@@ -182,7 +182,7 @@ function RevenueSection({
       <CardEyebrow>Revenue · isolated by ledger</CardEyebrow>
       <CardTitle>{data.activeSubscriptions} active subscriptions</CardTitle>
       <p className="text-xs text-muted mt-2">
-        Stripe (GBP/USD) and Paystack (NGN) ledgers are tracked separately. No FX conversion — ever.
+        Stripe (GBP/USD) and Paystack (NGN) ledgers are tracked separately. No FX conversion, ever.
       </p>
 
       <div className="mt-6 space-y-6">

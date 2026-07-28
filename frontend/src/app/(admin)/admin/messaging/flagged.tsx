@@ -42,7 +42,7 @@ export function FlaggedMessagesView() {
       <PageHeader
         eyebrow="Admin · messaging"
         title="Flagged messages"
-        description="Attempts to share off-platform contact details. These messages were blocked and never delivered — review them, dismiss once seen, or lock the whole conversation."
+        description="Attempts to share off-platform contact details. These messages were blocked and never delivered. Review them, dismiss once seen, or lock the whole conversation."
       />
 
       <Card>
@@ -53,7 +53,7 @@ export function FlaggedMessagesView() {
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex flex-wrap gap-1.5">
                     {m.blockedAt ? (
-                      <Badge tone="terracotta" className="text-[10px]">Blocked — not delivered</Badge>
+                      <Badge tone="terracotta" className="text-[10px]">Blocked, not delivered</Badge>
                     ) : null}
                     {m.flaggedReasons.map((r) => (
                       <Badge key={r} tone="terracotta" className="text-[10px]">{r}</Badge>

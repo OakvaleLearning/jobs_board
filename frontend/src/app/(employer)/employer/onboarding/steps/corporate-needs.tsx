@@ -44,14 +44,14 @@ const SECTOR_COPY = {
     skillsPlaceholder: 'e.g. Paediatric first aid, SEND experience',
     showAgeRanges: true,
     ageRangesLabel: 'Age ranges served',
-    ageRangesPlaceholder: 'e.g. 0–12 months, 1–2 yrs',
+    ageRangesPlaceholder: 'e.g. 0-12 months, 1-2 yrs',
   },
   default: {
     intro: 'Workforce sizing and the skills you need. We’ll match to certified caregivers.',
     skillsPlaceholder: 'e.g. Paediatric first aid, SEND experience',
     showAgeRanges: true,
     ageRangesLabel: 'Age ranges served',
-    ageRangesPlaceholder: 'e.g. 0–12 months, 1–2 yrs',
+    ageRangesPlaceholder: 'e.g. 0-12 months, 1-2 yrs',
   },
 } as const;
 
@@ -115,13 +115,13 @@ export function CorporateNeedsStep({
 
   function composeHours(days: string[], from: string, to: string) {
     const daysPart = days.join(', ');
-    const timePart = [from, to].filter(Boolean).join('–');
+    const timePart = [from, to].filter(Boolean).join('-');
     const nextValue = [daysPart, timePart].filter(Boolean).join(' · ');
     setValue('hoursOfOperation', nextValue, { shouldDirty: true });
   }
 
   function composeBudget(currency: string, min: string, max: string, period: string) {
-    const amount = [min, max].filter(Boolean).join('–');
+    const amount = [min, max].filter(Boolean).join('-');
     const head = [currency, amount].filter(Boolean).join(' ');
     const nextValue = period && head ? `${head} / ${period}` : head;
     setValue('budgetParameters', nextValue, { shouldDirty: true });

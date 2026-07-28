@@ -34,7 +34,7 @@ export function AdminOverview() {
       <PageHeader
         eyebrow="Internal · agents & admin"
         title="Run the marketplace."
-        description="Verification, placements, replacements, and revenue — all live, all in one place."
+        description="Verification, placements, replacements, and revenue, all live, all in one place."
         actions={
           <Badge tone={slaBreached === 0 && ndpaMissing === 0 ? 'sage' : 'terracotta'}>
             {slaBreached === 0 && ndpaMissing === 0

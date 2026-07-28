@@ -19,7 +19,7 @@ export function SectionJ({ initial }: { initial: unknown }) {
     <SectionFrame
       letter="J"
       title="Video introduction"
-      description="A short clip introducing yourself — 30 to 90 seconds. Optional, but it lifts shortlist rate."
+      description="A short clip introducing yourself, 30 to 90 seconds. Optional, but it lifts shortlist rate."
       status={status}
     >
       <div className="max-w-xl">

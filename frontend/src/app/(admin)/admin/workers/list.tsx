@@ -42,7 +42,7 @@ export function AdminWorkersRoster() {
       <PageHeader
         eyebrow="Admin · workers"
         title="Workers roster"
-        description="The full pipeline — drafts, pending review, verified, suspended. No visibility gate here; this is operations."
+        description="The full pipeline: drafts, pending review, verified, suspended. No visibility gate here; this is operations."
         actions={
           <Button
             type="button"

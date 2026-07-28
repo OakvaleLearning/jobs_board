@@ -35,7 +35,7 @@ export function NotificationTemplatesView() {
       <PageHeader
         eyebrow="Admin · notifications"
         title="Notification templates"
-        description="Edit the copy for each notification. Use {{variable}} placeholders — they’re filled in at send time. Changes apply to the next notification sent."
+        description="Edit the copy for each notification. Use {{variable}} placeholders. They’re filled in at send time. Changes apply to the next notification sent."
         actions={<Badge tone="neutral">{rows.length} templates</Badge>}
       />
 

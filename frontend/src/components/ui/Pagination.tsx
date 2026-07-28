@@ -64,7 +64,7 @@ export function Pagination<T>({
   return (
     <div className={cn('mt-4 flex flex-wrap items-center justify-between gap-3', className)}>
       <p className="text-xs text-muted tabular-nums">
-        Showing {pageStart}–{pageEnd} of {total}
+        Showing {pageStart}-{pageEnd} of {total}
       </p>
       <div className="flex items-center gap-2">
         <Button

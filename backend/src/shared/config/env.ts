@@ -28,6 +28,8 @@ const envSchema = z
     FROM_EMAIL: z.string().email().default('noreply@oakvaleltd.com'),
     TERMII_API_KEY: z.string().optional().default(''),
     TERMII_SENDER_ID: z.string().optional().default('Oakvale'),
+    // Cloudflare Turnstile — signup bot check (§auth). Unset → stub mode (no-op).
+    TURNSTILE_SECRET_KEY: z.string().optional().default(''),
     // Oakvale LMS integration (brief §15 / Open Question #1). Unset → stub mode.
     LMS_API_URL: z.string().optional().default(''),
     LMS_API_KEY: z.string().optional().default(''),

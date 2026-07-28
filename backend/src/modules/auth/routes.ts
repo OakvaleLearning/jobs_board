@@ -9,6 +9,7 @@ import {
   verifyEmailSchema,
 } from '@oakvale/shared/schema/auth.js';
 import { createAuthService } from './service.js';
+import { verifyTurnstile } from '@/shared/security/turnstile.js';
 import type { Role } from '@oakvale/shared/roles.js';
 
 export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
@@ -16,16 +17,20 @@ export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
     signAccessToken: async (payload) => app.jwt.sign(payload, { expiresIn: `${app.config.JWT_ACCESS_TTL_SECONDS}s` }),
   });
 
-  app.post('/register', async (req, reply) => {
+  // BUG-002 — throttle credential/OTP endpoints (per IP) to blunt brute-force.
+  const otpRateLimit = { config: { rateLimit: { max: 10, timeWindow: '15 minutes' } } };
+  const loginRateLimit = { config: { rateLimit: { max: 5, timeWindow: '15 minutes' } } };
+  const registerRateLimit = { config: { rateLimit: { max: 5, timeWindow: '15 minutes' } } };
+
+  app.post('/register', registerRateLimit, async (req, reply) => {
     const input = registerSchema.parse(req.body);
+    // Bot check before we create anything (no-op in stub mode). Keeps the handler
+    // thin: validate → captcha → service.
+    await verifyTurnstile(input.turnstileToken, req.ip);
     const user = await service.register({ ...input, ip: req.ip });
     reply.code(201);
     return { data: { id: user.id, email: user.email, role: user.role } };
   });
-
-  // BUG-002 — throttle credential/OTP endpoints (per IP) to blunt brute-force.
-  const otpRateLimit = { config: { rateLimit: { max: 10, timeWindow: '15 minutes' } } };
-  const loginRateLimit = { config: { rateLimit: { max: 5, timeWindow: '15 minutes' } } };
 
   app.post('/verify-email', otpRateLimit, async (req) => {
     const input = verifyEmailSchema.parse(req.body);

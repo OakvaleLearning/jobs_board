@@ -47,6 +47,12 @@ export const registerSchema = z
       errorMap: () => ({ message: 'You must accept the privacy policy.' }),
     }),
     acceptedBackgroundCheck: z.boolean().optional(),
+    /**
+     * Cloudflare Turnstile token from the signup widget. Optional at the schema
+     * layer so stub-mode/tests pass; the backend enforces its presence only when
+     * TURNSTILE_SECRET_KEY is configured (see verifyTurnstile).
+     */
+    turnstileToken: z.string().optional(),
   })
   .refine((v) => v.role !== 'EMPLOYER' || Boolean(v.employerTypeId), {
     message: 'An employer type is required.',

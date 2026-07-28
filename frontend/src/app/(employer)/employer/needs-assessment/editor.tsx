@@ -36,7 +36,7 @@ export function NeedsAssessmentEditor() {
       <PageHeader
         eyebrow={usesIndividualEmployer ? 'Care assessment' : 'Workforce needs'}
         title={usesIndividualEmployer ? 'Care recipient assessment.' : 'Workforce needs assessment.'}
-        description="Keep this up to date — we re-shortlist based on changes."
+        description="Keep this up to date. We re-shortlist based on changes."
       />
       {usesIndividualEmployer ? (
         <IndividualEmployerNeedsStep profile={q.data} onNext={() => router.push('/employer/dashboard')} />
