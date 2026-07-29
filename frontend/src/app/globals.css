@@ -101,6 +101,18 @@ body {
     letter-spacing: 0.18em;
   }
 
+  /* Dotted-grid texture. Applied to decorative backdrop layers behind sections
+     so large surfaces read as layered rather than flat. Colour is a faint ink
+     dot on transparent; override with `--dot-color` for use over dark bands
+     (e.g. a white-ish dot on emerald). */
+  .bg-dot-grid {
+    background-image: radial-gradient(var(--dot-color, rgba(28, 26, 23, 0.10)) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .bg-dot-grid-light {
+    --dot-color: rgba(255, 255, 255, 0.10);
+  }
+
   /* Hide the scrollbar while keeping the element scrollable. */
   .no-scrollbar {
     -ms-overflow-style: none;
