@@ -12,16 +12,18 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
-  default: 'rounded-2xl bg-white border border-ink/[0.06] shadow-card',
+  // Clean, minimal surfaces: hairline borders + a whisper of shadow at rest.
+  // Accent variants read as flat tints, not coloured glows.
+  default: 'rounded-2xl bg-white border border-ink/[0.06] shadow-sm',
   // Frosted surface: translucent white + backdrop blur for a layered, modern feel
   // over the atmospheric page wash.
-  glass: 'rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 shadow-glass',
-  brand: 'rounded-2xl bg-brand-50 border border-brand-200 shadow-brandLift',
-  amber: 'rounded-2xl bg-amber-50 border border-amber-200 shadow-amberLift',
-  teal: 'rounded-2xl bg-teal-50 border border-teal-200 shadow-tealLift',
-  sage: 'rounded-2xl bg-sage-50 border border-sage-200 shadow-sageLift',
-  // Rich gradient surface for hero/feature cards (was a flat brand fill).
-  gradient: 'rounded-2xl bg-gradient-brand text-white border border-brand-600/40 shadow-brandLift',
+  glass: 'rounded-2xl bg-white/70 backdrop-blur-xl border border-white/60 shadow-sm',
+  brand: 'rounded-2xl bg-brand-50 border border-brand-200 shadow-sm',
+  amber: 'rounded-2xl bg-amber-50 border border-amber-200 shadow-sm',
+  teal: 'rounded-2xl bg-teal-50 border border-teal-200 shadow-sm',
+  sage: 'rounded-2xl bg-sage-50 border border-sage-200 shadow-sm',
+  // Rich gradient surface, reserved for the single hero/feature moment.
+  gradient: 'rounded-2xl bg-gradient-brand text-white border border-brand-600/40 shadow-sm',
 };
 
 export function Card({
@@ -36,7 +38,8 @@ export function Card({
       className={cn(
         VARIANT_CLASSES[variant],
         'p-6',
-        interactive && 'transition-all duration-300 hover:-translate-y-1 hover:shadow-brandLiftHover',
+        interactive &&
+          'transition-all duration-300 hover:-translate-y-0.5 hover:border-ink/10 hover:shadow-lg',
         className,
       )}
       {...rest}

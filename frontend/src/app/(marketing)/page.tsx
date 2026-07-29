@@ -79,13 +79,13 @@ export default function LandingPage() {
 
             {/* Bento stat grid — one large gradient tile + three tinted. */}
             <div className="stagger grid gap-4 sm:grid-cols-2 md:col-span-5">
-              <Card variant="gradient" className="relative overflow-hidden p-7 sm:col-span-2">
-                <Quote className="absolute -right-2 -top-2 h-16 w-16 text-white/15" strokeWidth={1.25} aria-hidden />
+              <div className="relative overflow-hidden rounded-2xl border border-brand-600/40 bg-brand-700 p-7 text-white sm:col-span-2">
+                <Quote className="absolute -right-2 -top-2 h-16 w-16 text-white/10" strokeWidth={1.25} aria-hidden />
                 <p className="h-display text-4xl tabular-nums md:text-5xl">90 days</p>
-                <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/85">
+                <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/80">
                   Replacement guarantee on every placement, at no additional fee.
                 </p>
-              </Card>
+              </div>
               <BentoStat variant="sage" value="2" label="Employer pipelines served" />
               <BentoStat variant="amber" value="CPD" label="Accredited worker pool" />
               <BentoStat variant="teal" value="Fully" label="Managed placement lifecycle" className="sm:col-span-2" />
@@ -398,7 +398,9 @@ function BentoStat({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border p-6 ${BENTO_TINTS[variant]} ${className ?? ''}`}>
+    <div
+      className={`rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${BENTO_TINTS[variant]} ${className ?? ''}`}
+    >
       <p className="h-display text-3xl tabular-nums">{value}</p>
       <p className="mt-2 text-sm leading-relaxed text-ink-600">{label}</p>
     </div>
@@ -501,7 +503,7 @@ function PipelineCard({
   chips: string[];
 }) {
   return (
-    <Card variant="glass" interactive className="relative overflow-hidden !p-0">
+    <Card variant="default" interactive className="relative overflow-hidden !p-0">
       {/* Gradient header strip distinguishes the two pipelines at a glance. */}
       <div className={`relative h-24 ${gradient}`}>
         <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-50" aria-hidden />
