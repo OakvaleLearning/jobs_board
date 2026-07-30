@@ -152,8 +152,11 @@ export function createAuthService(deps: AuthDeps) {
     return created;
   }
 
-  /** Confirm an email-verification link. Single-use: the token is consumed on success. */
-  async function verifyEmailByToken(token: string): Promise<void> {
+  /** Confirm an email-verification link. Single-use: the token is consumed on success. Issues a session so the caller can log the user in immediately. */
+  async function verifyEmailByToken(
+    token: string,
+    meta?: { userAgent?: string; ipAddress?: string },
+  ): Promise<IssuedTokens & { user: Pick<User, 'id' | 'email' | 'fullName' | 'role'> }> {
     const userId = await redis.get(verifyTokenKey(token));
     if (!userId) {
       throw new AppError({
@@ -164,6 +167,10 @@ export function createAuthService(deps: AuthDeps) {
     }
     await redis.del(verifyTokenKey(token));
     await db.update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+    const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+    if (!user) throw new AppError({ code: 'INTERNAL_ERROR', message: 'User not found after verification.', statusCode: 500 });
+    const tokens = await issueTokens(user, meta?.userAgent, meta?.ipAddress);
+    return { ...tokens, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } };
   }
 
   /** Re-send a verification link. Silent for unknown or already-verified emails (no account enumeration). */

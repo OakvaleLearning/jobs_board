@@ -37,8 +37,24 @@ export const authRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
   app.post('/verify-email', otpRateLimit, async (req) => {
     const input = verifyEmailSchema.parse(req.body);
-    await service.verifyEmailByToken(input.token);
-    return { data: { verified: true } };
+    const result = await service.verifyEmailByToken(input.token, {
+      userAgent: req.headers['user-agent'],
+      ipAddress: req.ip,
+    });
+    return {
+      data: {
+        verified: true,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        expiresIn: result.expiresIn,
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          fullName: result.user.fullName,
+          role: result.user.role as Role,
+        },
+      },
+    };
   });
 
   app.post('/resend-verification', otpRateLimit, async (req) => {

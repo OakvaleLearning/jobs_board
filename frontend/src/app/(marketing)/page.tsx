@@ -277,9 +277,9 @@ export default function LandingPage() {
 
       {/* For carers */}
       <section id="workers" className="mx-auto w-4/5 px-6 pb-20">
-        <Card variant="gradient" className="relative overflow-hidden p-10 md:p-14">
-          <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-40" aria-hidden />
-          <div className="absolute -right-16 -top-16 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl" aria-hidden />
+        <Card variant="default" className="relative overflow-hidden p-10 md:p-14">
+          {/* <div className="bg-dot-grid bg-dot-grid absolute inset-0" aria-hidden /> */}
+          {/* <div className="absolute -right-16 -top-16 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl" aria-hidden /> */}
           <div className="relative grid items-center gap-10 md:grid-cols-12">
             <div className="space-y-5 md:col-span-7">
               <Badge tone="amber">Live on the Jobs Board</Badge>

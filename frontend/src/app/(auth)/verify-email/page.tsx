@@ -1,21 +1,26 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Input, Label } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/lib/api-client';
 import { toast, toastApiError } from '@/lib/toast';
+import { useAuth } from '@/lib/auth-store';
+import { homeForRole } from '@/lib/role-landing';
+import type { AuthUser } from '@/lib/auth-store';
 
 type Status = 'verifying' | 'success' | 'error' | 'missing';
 
 export default function VerifyEmailPage() {
   const params = useSearchParams();
+  const router = useRouter();
   const token = params.get('token');
   const [status, setStatus] = useState<Status>(token ? 'verifying' : 'missing');
   const [email, setEmail] = useState('');
   const [resending, setResending] = useState(false);
+  const setSession = useAuth((s) => s.setSession);
   // Guard against the effect firing twice (React 18 StrictMode) and burning the single-use token.
   const attempted = useRef(false);
 
@@ -23,10 +28,14 @@ export default function VerifyEmailPage() {
     if (!token || attempted.current) return;
     attempted.current = true;
     api
-      .post('/auth/verify-email', { token })
-      .then(() => setStatus('success'))
+      .post<{ data: { verified: boolean; accessToken: string; refreshToken: string; expiresIn: number; user: AuthUser } }>('/auth/verify-email', { token })
+      .then((res) => {
+        const { accessToken, refreshToken, user } = res.data;
+        setSession({ user, accessToken, refreshToken });
+        router.push(homeForRole(user.role));
+      })
       .catch(() => setStatus('error'));
-  }, [token]);
+  }, [token, setSession, router]);
 
   async function onResend() {
     if (!email) {
