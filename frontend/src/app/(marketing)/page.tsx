@@ -275,57 +275,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* For carers */}
-      <section id="workers" className="mx-auto w-4/5 px-6 pb-20">
-        <Card variant="default" className="relative overflow-hidden p-10 md:p-14">
-          {/* <div className="bg-dot-grid bg-dot-grid absolute inset-0" aria-hidden /> */}
-          {/* <div className="absolute -right-16 -top-16 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl" aria-hidden /> */}
-          <div className="relative grid items-center gap-10 md:grid-cols-12">
-            <div className="space-y-5 md:col-span-7">
-              <Badge tone="amber">Live on the Jobs Board</Badge>
-              <p className="text-eyebrow text-cream-200/70">For care workers</p>
-              <h2 className="h-display text-3xl leading-tight md:text-4xl">
-                Get credentialed. Get placed. Get paid in naira.
-              </h2>
-              <p className="max-w-xl text-cream-100/90">
-                Join a curated, high-trust marketplace where your Oakvale certification opens doors
-                with diaspora families and corporate cr&egrave;ches alike. Background checked,
-                CPD accredited, and visible only when verified, so employers know you mean it.
-              </p>
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Link href="/register?role=WORKER">
-                  <Button size="lg" variant="ghost" className="bg-white text-brand-800 hover:bg-cream-100">
-                    Build my profile
-                  </Button>
-                </Link>
-                <Link href="/login" className="self-center text-sm text-white hover:text-cream-50">
-                  Already registered &rarr;
-                </Link>
-              </div>
-            </div>
-            <div className="relative md:col-span-5">
-              <Image
-                src="/onboarding.svg"
-                alt="Illustration of a caregiver onboarding"
-                width={1000}
-                height={500}
-                className="rounded-2xl object-contain"
-              />
-              <span className="absolute -bottom-3 -left-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-brand-700 shadow-card">
-                <BadgeCheck className="h-4 w-4 text-brand-500" strokeWidth={2} />
-                Verified profile
-              </span>
-            </div>
-          </div>
-        </Card>
-      </section>
+      
 
       {/* Closing CTA — full-bleed gradient band. */}
-      <section className="relative isolate overflow-hidden bg-gradient-brand text-white">
-        <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-40" aria-hidden />
-        <div className="absolute -left-16 -top-10 h-96 w-96 rounded-full bg-amber-400/20 blur-3xl" aria-hidden />
-        <div className="absolute -bottom-16 right-0 h-96 w-96 rounded-full bg-teal-300/20 blur-3xl" aria-hidden />
-        <div className="relative mx-auto w-4/5 px-6 py-24 text-center">
+      {/* <section className="relative isolate overflow-hidden bg-cream text-white">
+            <div className="relative mx-auto w-4/5 px-6 py-24 text-center">
           <p className="text-eyebrow text-cream-100/70">Ready when you are</p>
           <h2 className="h-display mx-auto mt-3 max-w-3xl text-3xl md:text-5xl">
             Step into a world of talent today.
@@ -347,7 +301,7 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <Footer />
     </main>
@@ -504,8 +458,8 @@ function PipelineCard({
   return (
     <Card variant="default" interactive className="relative overflow-hidden !p-0">
       {/* Gradient header strip distinguishes the two pipelines at a glance. */}
-      <div className={`relative h-24 ${gradient}`}>
-        <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-50" aria-hidden />
+      <div className={`relative h-24`}>
+        {/* <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-50" aria-hidden /> */}
         <span className="text-eyebrow absolute bottom-4 left-8 text-white/90">{eyebrow}</span>
       </div>
       <div className="p-8 md:p-10">

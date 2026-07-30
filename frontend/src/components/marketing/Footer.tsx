@@ -2,7 +2,7 @@ import { Lockup } from '@/components/brand/Lockup';
 
 export function Footer() {
   return (
-    <footer className="bg-[#0F3D2E] text-cream-100 border-t border-white/10 mt-32">
+    <footer className="bg-[#0F3D2E] text-cream-100 border-t border-white/10">
       <div className="mx-auto w-4/5 px-6 py-12 flex flex-col md:flex-row gap-8 md:items-end md:justify-between">
         <div className="space-y-4">
           <Lockup size="md" href="" tone="light" />
