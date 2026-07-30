@@ -164,7 +164,7 @@ export default function RegisterPage() {
       <div className="space-y-3">
         <div className="space-y-1.5">
           <p className="text-eyebrow text-muted">Looking for work</p>
-          <div className="p-1 rounded-2xl bg-ink/5">
+          <div className="w-fit p-1 rounded-2xl bg-ink/5">
             <ChoiceCard
               title="Care worker"
               subtitle="Build a credentialed profile."
