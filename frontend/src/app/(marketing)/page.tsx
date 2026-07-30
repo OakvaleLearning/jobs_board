@@ -33,11 +33,11 @@ export default function LandingPage() {
 
       {/* Trust bar — credential chips bridging the hero into the page. */}
       <section aria-label="Credentials" className="relative overflow-hidden bg-brand-800">
-        <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-50" aria-hidden />
-        <div
+        {/* <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 opacity-50" aria-hidden /> */}
+        {/* <div
           className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-cream-100"
           aria-hidden
-        />
+        /> */}
         <div className="relative mx-auto w-4/5 px-6 py-8">
           <p className="text-eyebrow text-center text-cream-200/60">
             Every profile vetted, credentialed and accountable
@@ -54,14 +54,13 @@ export default function LandingPage() {
 
       {/* About */}
       <section id="about" className="relative overflow-hidden">
-        <div className="bg-dot-grid absolute -top-10 left-0 h-72 w-72 opacity-40" aria-hidden />
+        {/* <div className="bg-dot-grid absolute -top-10 left-0 h-72 w-72 opacity-40" aria-hidden /> */}
         <div className="relative mx-auto w-4/5 px-6 py-20 md:py-24">
           <div className="grid items-start gap-10 md:grid-cols-12">
             <div className="md:col-span-7">
               <SectionEyebrow>About Oakvale</SectionEyebrow>
               <h2 className="h-display mt-3 text-3xl leading-tight md:text-5xl">
-                A credentialed staffing marketplace,{' '}
-                <span className="text-gradient-warm italic">not a jobs board.</span>
+                A credentialed staffing marketplace.
               </h2>
               <div className="mt-6 border-l-2 border-amber-400/60 pl-5">
                 <p className="leading-relaxed text-ink-600">
@@ -200,7 +199,7 @@ export default function LandingPage() {
               chips={['Certified childcare workers', 'Self service job posting', 'Training to hire pathway']}
             />
             <PipelineCard
-              gradient="bg-gradient-warm"
+              gradient="bg-gradient-fresh"
               eyebrow="Diaspora families (UK & US)"
               title="Care for your loved ones back home, handled."
               body="Complete a Care Needs Assessment and a dedicated Account Manager matches you with a certified caregiver trained in elderly care, medication management and post surgical support. Pay in GBP or USD and rest easy knowing your family is in safe hands."

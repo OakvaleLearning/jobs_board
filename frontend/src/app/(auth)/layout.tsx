@@ -8,9 +8,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div
         className="hidden md:flex flex-col items-center justify-between p-10 lg:p-14 text-cream-50 relative overflow-hidden bg-brand-500"
         style={{
-          backgroundImage: 'url(/hero-image1.svg)',
+          backgroundImage: 'url(/hero-image.png)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'right center',
           backgroundRepeat: 'no-repeat',
         }}
       >

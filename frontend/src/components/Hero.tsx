@@ -63,22 +63,7 @@ const Hero = () => {
         />
       ))}
       <div className="absolute inset-0 -z-[15] bg-black/40" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-900/95 via-brand-700/85 to-amber-700/45" />
-      {/* Dotted-grid texture layer for depth over the photo. */}
-      <div className="bg-dot-grid bg-dot-grid-light absolute inset-0 -z-[11] opacity-60" aria-hidden />
-      {/* Soft amber aura top-right + emerald aura bottom-left, and a fade into the page below. */}
-      <div
-        className="absolute -top-24 -right-24 -z-[9] h-96 w-96 rounded-full bg-amber-400/25 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="absolute -bottom-32 -left-24 -z-[9] h-[28rem] w-[28rem] rounded-full bg-brand-500/25 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 -z-[8] h-32 bg-gradient-to-b from-transparent to-cream-50"
-        aria-hidden
-      />
+       
       <div className="mx-auto max-w-[80%] px-6 pt-24 md:pt-32 pb-24 text-left">
         {/* Rotating copy — keyed on the active slide so the entrance animations replay. */}
         <div key={active}>
